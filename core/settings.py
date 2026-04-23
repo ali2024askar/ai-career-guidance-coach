@@ -111,7 +111,6 @@ if DEBUG:
     STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 else:
     STATIC_ROOT = os.path.join(BASE_DIR, STATIC_URL.strip("/"))
-
 STATIC_ROOT = BASE_DIR / 'staticfiles'  # Or your chosen static directory
 
 MEDIA_URL = '/media/'

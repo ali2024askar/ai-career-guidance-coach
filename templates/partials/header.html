@@ -1,0 +1,67 @@
+{% load static %}
+
+<header class="pf-header">
+    <div class="pf-header__inner">
+
+        {# ── Logo ── #}
+        <a href="#" class="pf-logo">
+            <img class="pf-logo__icon" src="{% static 'images/logo.png' %}" alt="Logo">
+            <span class="pf-logo__name">ai career <em>guidance coach</em></span>
+        </a>
+
+        {# ── Logged-in nav ── #}
+        {% if request.session.user_id %}
+
+        <nav class="pf-header__nav" aria-label="main navigation">
+            <a href="#"
+               class="pf-nav-link {% if request.resolver_match.url_name == 'user_input' %}pf-nav-link--active{% endif %}">
+                interests
+            </a>
+            <a href="#"
+               class="pf-nav-link {% if request.resolver_match.url_name == 'roadmap' %}pf-nav-link--active{% endif %}">
+                my roadmap
+            </a>
+            <a href="#"
+               class="pf-nav-link {% if request.resolver_match.url_name == 'resources' %}pf-nav-link--active{% endif %}">
+                resources
+            </a>
+        </nav>
+
+        <div class="pf-header__actions">
+            <span class="pf-user-pill">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                    <circle cx="7" cy="5" r="2.5" stroke="currentColor" stroke-width="1.2"/>
+                    <path d="M2 12C2 9.8 4.2 8 7 8C9.8 8 12 9.8 12 12" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                </svg>
+                {{ request.session.user_name }}
+            </span>
+            <a href="#" class="pf-btn pf-btn--ghost pf-btn--sm">
+                sign out
+            </a>
+        </div>
+
+        {# ── Guest nav ── #}
+        {% else %}
+
+        <nav class="pf-header__nav" aria-label="main navigation">
+            <a href="#how-it-works" class="pf-nav-link">how it works</a>
+            <a href="#careers"      class="pf-nav-link">career paths</a>
+            <a href="#resources"    class="pf-nav-link">resources</a>
+        </nav>
+
+        <div class="pf-header__actions">
+            <a href="#" class="pf-btn pf-btn--ghost">
+                sign in
+            </a>
+            <a href="#" class="pf-btn pf-btn--primary">
+                get started
+                <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+                    <path d="M2.5 6.5H10.5M7.5 3.5L10.5 6.5L7.5 9.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </a>
+        </div>
+
+        {% endif %}
+
+    </div>
+</header>

@@ -1,0 +1,66 @@
+{% load static %}
+
+<footer class="pf-footer">
+    <div class="pf-footer__inner">
+
+        {# ── Top grid: brand + 3 link columns ── #}
+        <div class="pf-footer__top">
+
+            {# Brand column #}
+            <div class="pf-footer__brand">
+                <a href="#" class="pf-logo">
+                    <img class="pf-logo__icon" src="{% static 'images/logo.png' %}" alt="Logo">
+                    <span class="pf-logo__name">ai career <em>guidance coach</em></span>
+                </a>
+
+                <p class="pf-footer__tagline">
+                    AI-powered career coaching that builds your personal roadmap — step by step.
+                </p>
+                <span class="pf-footer__badge">
+                    <span class="pf-footer__badge-dot"></span>
+                    AI-powered matching
+                </span>
+            </div>
+
+            {# Product column #}
+            <div class="pf-footer__col">
+                <h4 class="pf-footer__col-title">product</h4>
+                <a href="#how-it-works" class="pf-footer__link">how it works</a>
+                <a href="#careers"      class="pf-footer__link">career paths</a>
+                <a href="#roadmap"      class="pf-footer__link">roadmap builder</a>
+                <a href="#quiz"         class="pf-footer__link">quiz engine</a>
+            </div>
+
+         
+
+        </div>
+
+        {# ── Bottom bar: copyright + social ── #}
+        <div class="pf-footer__bottom">
+            <span class="pf-footer__copy">
+                &copy; {% now "Y" %} ai career guidance coach&mdash; all rights reserved
+            </span>
+            <div class="pf-footer__social">
+                <a href="#" class="pf-social-btn" aria-label="Twitter / X">
+                    <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+                        <path d="M1 1L5.5 7.5L1 12H2.5L6.2 8.4L9.5 12H12.5L7.7 5.2L11.8 1H10.3L7 4.3L4 1H1Z" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </a>
+                <a href="#" class="pf-social-btn" aria-label="Instagram">
+                    <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+                        <rect x="1.5" y="1.5" width="10" height="10" rx="3" stroke="currentColor" stroke-width="1.1"/>
+                        <circle cx="6.5" cy="6.5" r="2.2" stroke="currentColor" stroke-width="1.1"/>
+                        <circle cx="9.5" cy="3.5" r=".6" fill="currentColor"/>
+                    </svg>
+                </a>
+                <a href="#" class="pf-social-btn" aria-label="LinkedIn">
+                    <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+                        <rect x="1.5" y="1.5" width="10" height="10" rx="2" stroke="currentColor" stroke-width="1.1"/>
+                        <path d="M4 5.5V9M4 4V4.1M6.5 9V7C6.5 6.2 7 5.5 7.8 5.5C8.6 5.5 9 6.2 9 7V9M6.5 5.5V9" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+
+    </div>
+</footer>

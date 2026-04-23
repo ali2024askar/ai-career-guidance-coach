@@ -1,0 +1,55 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block branding %}
+<div id="branding">
+    <a href="{% url 'admin:index' %}" class="admin-logo-link">
+        <img src="{% static 'images/logo.png' %}" alt="AI Career Guidance Coach logo" class="admin-logo-img">
+        <span class="admin-logo-title">{{ site_header|default:_('AI Career Guidance Coach') }}</span>
+    </a>
+</div>
+{% endblock %}
+
+{% block extrahead %}
+    {{ block.super }}
+    <style>
+        .admin-logo-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .admin-logo-img {
+            width: 130px;
+            height: 130px;
+            object-fit: contain;
+            border-radius: 18px;
+            display: inline-block;
+            max-width: 130px;
+        }
+
+        .admin-logo-title {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            color: #4338ca;
+        }
+
+        #content h1 {
+            color: #4338ca;
+        }
+
+        @media (max-width: 720px) {
+            .admin-logo-link {
+                gap: 0.75rem;
+            }
+            .admin-logo-img {
+                width: 96px;
+                height: 96px;
+            }
+            .admin-logo-title {
+                font-size: 1.35rem;
+            }
+        }
+    </style>
+{% endblock %}
