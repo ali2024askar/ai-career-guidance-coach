@@ -5,7 +5,7 @@
 {% block content %}
 <div class="pf-page pf-page--centered">
     <div class="pf-wrap pf-wrap--lg">
-        <div class="pf-card">
+        <div class="pf-card pf-anim-fade-up">
             <h1>My roadmap</h1>
             <p class="pf-form-help">Your current roadmap is shown below. Complete the chat onboarding if you haven’t already.</p>
 
@@ -41,7 +41,7 @@
 
                     <div style="margin-top:24px; display:grid; gap:18px;">
                         {% for item in roadmap_steps %}
-                            <div class="pf-card pf-roadmap-step {% if not item.unlocked %}pf-roadmap-step--locked{% endif %}" style="padding:20px;">
+                            <div class="pf-card pf-roadmap-step pf-anim-fade-up {% if not item.unlocked %}pf-roadmap-step--locked{% endif %}" style="padding:20px; --i:{{ forloop.counter0 }}">
                                 <div style="display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;">
                                     <div>
                                         <p style="margin:0 0 8px; font-size:13px; letter-spacing:.04em; color:#6b7280; text-transform:uppercase;">{{ item.step.week_label }}</p>

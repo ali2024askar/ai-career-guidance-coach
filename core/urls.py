@@ -3,11 +3,15 @@ from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
-from django.views.generic import TemplateView
+
+from . import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', TemplateView.as_view(template_name='base.html'), name='about-us'),
+    path('', views.home_view, name='home'),
+    path('how-it-works/', views.how_it_works_view, name='how-it-works'),
+    path('career-paths/', views.career_paths_view, name='career-paths'),
+    path('resources/', views.resources_view, name='resources'),
     path('accounts/', include('accounts.urls')),
     path('career/', include('career.urls')),
     path('quiz/', include('quiz.urls')),

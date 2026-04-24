@@ -5,7 +5,7 @@
 {% block content %}
 <div class="pf-page pf-page--centered">
     <div class="pf-wrap pf-wrap--sm">
-        <div class="pf-card">
+        <div class="pf-card pf-anim-fade-up">
             <h1>Tell us about your goals</h1>
             <p class="pf-form-help">Use this chat to share your interests and get matched to the right roadmap.</p>
 
@@ -16,7 +16,7 @@
                     </div>
                 {% else %}
                     <div class="pf-field" style="background:#f8fafc;border-radius:12px;padding:14px;">
-                        <p>Welcome! Tell us what kind of career path you’re interested in, and we’ll start your roadmap.</p>
+                        <p>Write your interest. Something like this: “I like art and tech.”</p>
                     </div>
                 {% endif %}
             </div>
@@ -24,8 +24,8 @@
             <form class="pf-form" method="post" novalidate>
                 {% csrf_token %}
                 <div class="pf-field">
-                    <label for="message">Your message</label>
-                    <textarea id="message" name="message" class="pf-textarea" placeholder="I want a career in AI and product design..." required></textarea>
+                    <label for="message">Your interest</label>
+                    <textarea id="message" name="message" class="pf-textarea" placeholder="I like art and tech" required></textarea>
                 </div>
                 <div class="pf-form__actions">
                     <button type="submit" class="pf-btn pf-btn--primary">Send</button>

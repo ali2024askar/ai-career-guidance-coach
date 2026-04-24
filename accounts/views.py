@@ -83,4 +83,4 @@ def signin_view(request):
 
 def logout_view(request):
     request.session.flush()
-    return redirect(reverse('about-us'))
+    return redirect(reverse('how-it-works'))

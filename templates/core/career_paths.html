@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Career Paths · AI Career Guidance Coach{% endblock %}
+
+{% block content %}
+<div class="pf-page">
+    <div class="pf-wrap pf-wrap--lg">
+        <section class="pf-hero pf-anim-fade-up">
+            <span class="pf-tag">Career paths</span>
+            <h1>Browse our available career paths</h1>
+            <p class="pf-hero__subtitle">Each path includes a clear roadmap, practical milestones, and helpful resources.</p>
+        </section>
+
+        <section class="pf-section">
+            <div class="pf-card-grid pf-card-grid--wide">
+                {% for career in careers %}
+                <article class="pf-card pf-card--light pf-anim-scale-up" style="--i:{{ forloop.counter0 }}">
+                    <h3>{{ career.title }}</h3>
+                    <p>{{ career.description|default:'A career path designed to help you learn and level up.' }}</p>
+                </article>
+                {% endfor %}
+            </div>
+        </section>
+    </div>
+</div>
+{% endblock %}

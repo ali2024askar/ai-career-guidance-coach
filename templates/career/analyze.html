@@ -18,7 +18,7 @@
             </div>
 
             <p style="margin-top:18px; color:#334155;">Please keep this page open while we process your interest.</p>
-            <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+            {% csrf_token %}
             <noscript>
                 <div class="pf-alert pf-alert--warning">JavaScript is required to complete the analysis flow. Please enable JavaScript or refresh.</div>
             </noscript>
@@ -49,7 +49,7 @@
 {% block extra_js %}
 <script>
 (function() {
-    const totalMs = {{ analysis_seconds|default:10 }} * 1000;
+    const totalMs = {{ analysis_seconds|default:1 }} * 1000;
     const startTime = Date.now();
     const progressBar = document.getElementById('progress-bar');
     const progressLabel = document.getElementById('progress-label');
@@ -72,14 +72,14 @@
     timer = setInterval(updateProgress, 100);
     updateProgress();
 
-    const csrfInput = document.querySelector('[name=csrfmiddlewaretoken]');
-    const csrfToken = csrfInput ? csrfInput.value : '';
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
+    const token = csrfToken ? csrfToken.value : '';
 
     fetch('{% url "career:analyze_api" %}', {
         method: 'POST',
         credentials: 'same-origin',
         headers: {
-            'X-CSRFToken': csrfToken,
+            'X-CSRFToken': token,
             'Content-Type': 'application/x-www-form-urlencoded',
         },
         body: ''

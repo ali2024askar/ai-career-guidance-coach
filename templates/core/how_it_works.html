@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}How It Works · AI Career Guidance Coach{% endblock %}
+
+{% block content %}
+<div class="pf-page">
+    <div class="pf-wrap pf-wrap--lg">
+        <section class="pf-hero pf-anim-fade-up">
+            <span class="pf-tag">How it works</span>
+            <h1>From interests to an action-ready career roadmap</h1>
+            <p class="pf-hero__subtitle">We help you turn your passions into a career path with clear learning steps and resources.</p>
+        </section>
+
+        <section class="pf-section pf-section--split">
+            <div class="pf-step-card pf-anim-scale-up" style="--i:0">
+                <h2>1. Share your interests</h2>
+                <p>Tell us what you like and where your curiosity lies. For example: "I like art and tech."</p>
+            </div>
+            <div class="pf-step-card pf-anim-scale-up" style="--i:1">
+                <h2>2. Get matched to a career</h2>
+                <p>We compare your interests to our career library and choose a path that fits your goals.</p>
+            </div>
+            <div class="pf-step-card pf-anim-scale-up" style="--i:2">
+                <h2>3. Follow a roadmap</h2>
+                <p>Receive a weekly learning plan with steps, tasks, and resources built for your chosen path.</p>
+            </div>
+            <div class="pf-step-card pf-anim-scale-up" style="--i:3">
+                <h2>4. Keep track of progress</h2>
+                <p>Earn progress, check off milestones, and move forward with confidence.</p>
+            </div>
+        </section>
+
+        <section class="pf-section pf-anim-fade-up" style="--i:4">
+            <div class="pf-section__intro">
+                <span class="pf-tag">Career paths</span>
+                <h2>Choose your next path</h2>
+                <p>We load only the career paths in the system, so you can quickly compare options before you start.</p>
+            </div>
+            <div class="pf-card-grid">
+                {% for career in careers %}
+                <article class="pf-card pf-card--light">
+                    <h3>{{ career.title }}</h3>
+                    <p>{{ career.description|default:'A practical pathway for your next growth phase.' }}</p>
+                </article>
+                {% endfor %}
+            </div>
+        </section>
+
+        <div class="pf-actions pf-anim-fade-up" style="--i:5">
+            <a href="{% url 'career-paths' %}" class="pf-btn pf-btn--primary">Explore all career paths</a>
+            <a href="{% url 'resources' %}" class="pf-btn pf-btn--outline">View resources</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
