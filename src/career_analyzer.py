@@ -67,5 +67,10 @@ class CareerAnalyzer:
         return random.choice(responses)
 
 
-# Global instance for easy import
-career_analyzer = CareerAnalyzer()
+career_analyzer = None
+
+def get_career_analyzer():
+    global career_analyzer
+    if career_analyzer is None:
+        career_analyzer = CareerAnalyzer()
+    return career_analyzer
