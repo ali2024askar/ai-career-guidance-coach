@@ -25,15 +25,28 @@ class Resource(models.Model):
         'article':  'file-text',
         'book':     'book',
     }
+    LOGO_MAP = {
+        'platform': 'https://img.icons8.com/color/24/000000/grid.png',
+        'course':   'https://img.icons8.com/color/24/000000/mortarboard.png',
+        'video':    'https://img.icons8.com/color/24/000000/play.png',
+        'article':  'https://img.icons8.com/color/24/000000/document.png',
+        'book':     'https://img.icons8.com/color/24/000000/book.png',
+    }
 
     career = models.ForeignKey(Career, on_delete=models.CASCADE, related_name='resources')
+    step = models.ForeignKey('RoadmapStep', null=True, blank=True, on_delete=models.CASCADE, related_name='resources')
     title  = models.CharField(max_length=200)
     url    = models.URLField(blank=True)
     type   = models.CharField(max_length=20, choices=TYPE_CHOICES, default='platform')
+    logo_url = models.URLField(blank=True, help_text="URL to resource logo/icon")
 
     @property
     def icon(self):
         return self.ICON_MAP.get(self.type, 'link')
+
+    @property
+    def effective_logo_url(self):
+        return self.logo_url or self.LOGO_MAP.get(self.type, 'https://cdn.jsdelivr.net/npm/feather-icons@4.29.0/dist/icons/link.svg')
 
     def __str__(self):
         return f"{self.title} ({self.career.title})"

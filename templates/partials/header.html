@@ -13,11 +13,11 @@
         {% if request.session.user_id %}
 
         <nav class="pf-header__nav" aria-label="main navigation">
-            <a href="#"
-               class="pf-nav-link {% if request.resolver_match.url_name == 'user_input' %}pf-nav-link--active{% endif %}">
+            <a href="{% url 'career:chat' %}"
+               class="pf-nav-link {% if request.resolver_match.url_name == 'chat' %}pf-nav-link--active{% endif %}">
                 interests
             </a>
-            <a href="#"
+            <a href="{% url 'career:roadmap' %}"
                class="pf-nav-link {% if request.resolver_match.url_name == 'roadmap' %}pf-nav-link--active{% endif %}">
                 my roadmap
             </a>
@@ -35,7 +35,7 @@
                 </svg>
                 {{ request.session.user_name }}
             </span>
-            <a href="#" class="pf-btn pf-btn--ghost pf-btn--sm">
+            <a href="{% url 'accounts:logout' %}" class="pf-btn pf-btn--ghost pf-btn--sm">
                 sign out
             </a>
         </div>
@@ -50,10 +50,10 @@
         </nav>
 
         <div class="pf-header__actions">
-            <a href="#" class="pf-btn pf-btn--ghost">
+            <a href="{% url 'accounts:signin' %}" class="pf-btn pf-btn--ghost">
                 sign in
             </a>
-            <a href="#" class="pf-btn pf-btn--primary">
+            <a href="{% url 'accounts:signup' %}" class="pf-btn pf-btn--primary">
                 get started
                 <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
                     <path d="M2.5 6.5H10.5M7.5 3.5L10.5 6.5L7.5 9.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>

@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block title %}My roadmap · AI Career Guidance Coach{% endblock %}
+
+{% block content %}
+<div class="pf-page pf-page--centered">
+    <div class="pf-wrap pf-wrap--lg">
+        <div class="pf-card">
+            <h1>My roadmap</h1>
+            <p class="pf-form-help">Your current roadmap is shown below. Complete the chat onboarding if you haven’t already.</p>
+
+            {% if career %}
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                    <p style="margin: 0;"><strong>Career path:</strong> {{ career.title }}</p>
+                    <a href="{% url 'career:reset_interest' %}" class="pf-btn pf-btn--outline pf-btn--sm" onclick="return confirm('Are you sure you want to clear your interests and start over? This will reset your progress.')" style="font-size: 12px;">
+                        Clear my interest
+                    </a>
+                </div>
+                {% if demo_mode %}
+                    <div class="pf-alert pf-alert--info" style="margin-top:12px;">
+                        This roadmap is a database-backed demo preview so you can see how the template renders.
+                    </div>
+                {% endif %}
+                {% if profile.analysis_result %}
+                    <div class="pf-alert pf-alert--info" style="margin-top:12px;">
+                        {{ profile.analysis_result }}
+                    </div>
+                {% endif %}
+                {% if roadmap_steps %}
+                    <div class="pf-steps" style="margin-top:24px; flex-wrap: wrap; gap: 14px;">
+                        {% for item in roadmap_steps %}
+                            <div class="pf-step {% if item.passed %}pf-step--done{% elif item.unlocked %}pf-step--active{% endif %}">
+                                <div class="pf-step__num">{{ forloop.counter }}</div>
+                                <div class="pf-step__label">{{ item.step.week_label }}</div>
+                            </div>
+                            {% if not forloop.last %}
+                                <div class="pf-step__connector {% if item.passed %}pf-step__connector--done{% endif %}"></div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+
+                    <div style="margin-top:24px; display:grid; gap:18px;">
+                        {% for item in roadmap_steps %}
+                            <div class="pf-card pf-roadmap-step {% if not item.unlocked %}pf-roadmap-step--locked{% endif %}" style="padding:20px;">
+                                <div style="display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;">
+                                    <div>
+                                        <p style="margin:0 0 8px; font-size:13px; letter-spacing:.04em; color:#6b7280; text-transform:uppercase;">{{ item.step.week_label }}</p>
+                                        <h2 style="margin:0; font-size:18px;">{{ item.step.title }}</h2>
+                                    </div>
+                                    <span style="font-size:13px; color: {% if item.passed %}#ffffff{% else %}#374151{% endif %}; background: {% if item.passed %}#10b981{% else %}#f3f4f6{% endif %}; border-radius:999px; padding:8px 12px;">
+                                        {% if item.passed %}Passed{% else %}Pending{% endif %}
+                                    </span>
+                                </div>
+                                <p style="margin:14px 0 0; color:#4b5563;">{{ item.step.description }}</p>
+                                {% if item.passed %}
+                                    <div style="margin-top:18px; display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+                                        <span style="font-size:13px; color:#1f2937; font-weight:600;">Resources</span>
+                                    </div>
+                                    {% if item.resources %}
+                                        <ul class="pf-resource-list" style="margin:16px 0 0; padding:0; list-style:none; display:grid; gap:10px;">
+                                            {% for resource in item.resources %}
+                                                <li>
+                                                    <a href="{{ resource.url }}" target="_blank" rel="noopener noreferrer" class="pf-btn pf-btn--outline" style="width:auto; justify-content:space-between; display:flex; align-items:center; gap:12px;">
+                                                        <img src="{{ resource.effective_logo_url }}" alt="{{ resource.title }} icon" style="width:24px; height:24px; border-radius:4px; object-fit:cover;">
+                                                        <span>{{ resource.title }}</span>
+                                                        <span style="opacity:.7; font-size:12px;">{{ resource.type|upper }}</span>
+                                                    </a>
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% else %}
+                                        <p class="pf-form-help" style="margin-top:14px;">No resources are available for this step yet.</p>
+                                    {% endif %}
+                                {% elif item.unlocked %}
+                                    <div style="margin-top:18px; display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between;">
+                                        <span style="font-size:13px; color:#6b7280;">This step is unlocked. Use these resources and then take the quiz to continue.</span>
+                                        <a href="{% url 'quiz:step_quiz' item.step.pk %}" class="pf-btn pf-btn--primary">Take quiz</a>
+                                    </div>
+                                    {% if item.resources %}
+                                        <ul class="pf-resource-list" style="margin:16px 0 0; padding:0; list-style:none; display:grid; gap:10px;">
+                                            {% for resource in item.resources %}
+                                                <li>
+                                                    <a href="{{ resource.url }}" target="_blank" rel="noopener noreferrer" class="pf-btn pf-btn--outline" style="width:auto; justify-content:space-between; display:flex; align-items:center; gap:12px;">
+                                                        <img src="{{ resource.effective_logo_url }}" alt="{{ resource.title }} icon" style="width:24px; height:24px; border-radius:4px; object-fit:cover;">
+                                                        <span>{{ resource.title }}</span>
+                                                        <span style="opacity:.7; font-size:12px;">{{ resource.type|upper }}</span>
+                                                    </a>
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% endif %}
+                                {% else %}
+                                    <div style="margin-top:18px; color:#6b7280; font-size:13px;">Locked until earlier steps are passed.</div>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="pf-form-help">Your roadmap will appear here once the career path is matched.</p>
+                {% endif %}
+            {% elif profile.interest_text %}
+                <div class="pf-alert">We have your interest saved. Complete the chat again to refresh your roadmap.</div>
+                <div class="pf-form__actions" style="margin-top:20px; gap: 12px; display:flex; flex-wrap:wrap;">
+                    <a href="{% url 'career:chat' %}" class="pf-btn pf-btn--primary">Update onboarding chat</a>
+                    <a href="{% url 'career:reset_interest' %}" class="pf-btn pf-btn--ghost">Reset interest</a>
+                </div>
+            {% else %}
+                <div class="pf-alert">No career roadmap has been assigned yet. Please complete the onboarding chat.</div>
+                <div class="pf-form__actions" style="margin-top:20px;">
+                    <a href="{% url 'career:chat' %}" class="pf-btn pf-btn--primary">Open onboarding chat</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import reverse
 from .models import UserProfile
-from django.utils.html import format_html
+from django.utils.html import format_html, mark_safe
 
 
 # ──────────────────────────────────────────────────────────
@@ -34,19 +34,19 @@ class UserProfileAdmin(admin.ModelAdmin):
         'joined',
     )
     list_filter  = ('career__title', 'created_at')
-    search_fields = ('name', 'email', 'interest_text')
+    search_fields = ('name', 'email')
     ordering     = ('-created_at',)
     date_hierarchy = 'created_at'
 
     # ── Detail view ──────────────────────────────────────
-    readonly_fields = ('created_at', 'career_link', 'interest_preview')
+    readonly_fields = ('created_at', 'career_link')
     fieldsets = (
         ('personal info', {
             'fields': ('name', 'age', 'email')
         }),
         ('career match', {
-            'fields': ('interest_preview', 'career', 'career_link'),
-            'description': 'The AI reads the interest text and sets the career field.'
+            'fields': ('career', 'career_link'),
+            'description': 'The AI career match is assigned once the user completes onboarding.'
         }),
         ('meta', {
             'fields': ('created_at',),
@@ -59,7 +59,7 @@ class UserProfileAdmin(admin.ModelAdmin):
     @admin.display(description='career', ordering='career__title')
     def career_badge(self, obj):
         if not obj.career:
-            return format_html('<span style="color:#9ca3af">—</span>')
+            return mark_safe('<span style="color:#9ca3af">—</span>')
         return format_html(
             '<span style="background:#eef2ff;color:#4338ca;padding:2px 10px;'
             'border-radius:999px;font-size:12px;font-weight:500">{}</span>',
@@ -72,7 +72,7 @@ class UserProfileAdmin(admin.ModelAdmin):
         total  = obj.career.steps.count() if obj.career else 0
         passed = UserStepProgress.objects.filter(user=obj, passed=True).count()
         if total == 0:
-            return format_html('<span style="color:#9ca3af">—</span>')
+            return mark_safe('<span style="color:#9ca3af">—</span>')
         pct   = int(passed / total * 100)
         color = '#16a34a' if pct == 100 else '#4f46e5' if pct > 0 else '#9ca3af'
         return format_html(
@@ -90,12 +90,3 @@ class UserProfileAdmin(admin.ModelAdmin):
             return '—'
         url = reverse('admin:career_careerpath_change', args=[obj.career.pk])
         return format_html('<a href="{}">{}</a>', url, obj.career.title)
-
-    @admin.display(description='interest text')
-    def interest_preview(self, obj):
-        return format_html(
-            '<div style="background:#f9fafb;border:1px solid #e5e7eb;'
-            'border-radius:6px;padding:10px 14px;font-size:13px;'
-            'max-width:600px;line-height:1.6">{}</div>',
-            obj.interest_text or '—'
-        )

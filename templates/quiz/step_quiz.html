@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Step quiz · AI Career Guidance Coach{% endblock %}
+
+{% block content %}
+<div class="pf-page pf-page--centered">
+    <div class="pf-wrap pf-wrap--md">
+        <div class="pf-card">
+            <h1>{{ step.title }}</h1>
+            <p class="pf-form-help">Answer the quiz for this step to unlock its resources and move forward.</p>
+            {% if message %}
+                <div class="pf-alert {% if passed %}pf-alert--success{% else %}pf-alert--danger{% endif %}" style="margin-top:16px;">
+                    {{ message }}
+                </div>
+            {% endif %}
+            {% if passed %}
+                <div class="pf-alert pf-alert--info">You have passed this step quiz. Resources are now available in your roadmap.</div>
+                <div class="pf-form__actions" style="margin-top:20px; gap:12px; display:flex; flex-wrap:wrap;">
+                    <a href="{% url 'career:roadmap' %}" class="pf-btn pf-btn--primary">Return to roadmap</a>
+                </div>
+            {% else %}
+                <form class="pf-form" method="post" novalidate>
+                    {% csrf_token %}
+                    {% if questions %}
+                        {% for question in questions %}
+                            <div class="pf-field" style="margin-bottom:18px;">
+                                <label class="pf-label">{{ forloop.counter }}. {{ question.text }}</label>
+                                <div class="pf-radio-group" style="display:grid; gap:10px; margin-top:10px;">
+                                    {% for option in question.options.all %}
+                                        <label class="pf-radio" style="display:flex; gap:12px; align-items:center; padding:12px; border:1px solid #d1d5db; border-radius:12px; cursor:pointer;">
+                                            <input type="radio" name="question_{{ question.pk }}" value="{{ option.pk }}" style="margin:0;">
+                                            <span>{{ option.text }}</span>
+                                        </label>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                        <div class="pf-form__actions" style="margin-top:20px; gap:12px; display:flex; flex-wrap:wrap;">
+                            <button type="submit" class="pf-btn pf-btn--primary">Submit answers</button>
+                            <a href="{% url 'career:roadmap' %}" class="pf-btn pf-btn--ghost">Back to roadmap</a>
+                        </div>
+                    {% else %}
+                        <div class="pf-alert">This step currently has no quiz questions configured. It has been marked complete automatically.</div>
+                        <div class="pf-form__actions" style="margin-top:20px;">
+                            <button type="submit" class="pf-btn pf-btn--primary">Continue</button>
+                        </div>
+                    {% endif %}
+                </form>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

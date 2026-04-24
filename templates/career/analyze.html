@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block title %}Analyzing your interest · AI Career Guidance Coach{% endblock %}
+
+{% block content %}
+<div class="pf-page pf-page--centered">
+    <div class="pf-wrap pf-wrap--sm">
+        <div class="pf-card" style="text-align:center;">
+            <h1>Analyzing your career interest</h1>
+            <p class="pf-form-help">We’re building your roadmap now. This may take a few moments.</p>
+
+            <div class="pf-progress-shell" style="margin:32px 0;">
+                <div class="pf-progress-bar" id="progress-bar"></div>
+            </div>
+            <div style="display:flex; justify-content:space-between; gap:12px; font-size:0.95rem; color:#475569;">
+                <span id="progress-label">Preparing analysis...</span>
+                <span id="progress-percent">0%</span>
+            </div>
+
+            <p style="margin-top:18px; color:#334155;">Please keep this page open while we process your interest.</p>
+            <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+            <noscript>
+                <div class="pf-alert pf-alert--warning">JavaScript is required to complete the analysis flow. Please enable JavaScript or refresh.</div>
+            </noscript>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.pf-progress-shell {
+    background: #e2e8f0;
+    border-radius: 999px;
+    width: 100%;
+    height: 14px;
+    overflow: hidden;
+}
+.pf-progress-bar {
+    width: 0;
+    height: 100%;
+    background: linear-gradient(90deg, #2563eb 0%, #3b82f6 100%);
+    border-radius: 999px;
+    transition: width 0.2s ease;
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function() {
+    const totalMs = {{ analysis_seconds|default:10 }} * 1000;
+    const startTime = Date.now();
+    const progressBar = document.getElementById('progress-bar');
+    const progressLabel = document.getElementById('progress-label');
+    const progressPercent = document.getElementById('progress-percent');
+    let timer;
+
+    function updateProgress() {
+        const elapsed = Date.now() - startTime;
+        const ratio = Math.min(elapsed / totalMs, 1);
+        const percent = Math.round(ratio * 100);
+        progressBar.style.width = percent + '%';
+        progressPercent.textContent = percent + '%';
+        if (percent < 100) {
+            progressLabel.textContent = 'Analyzing your interest...';
+        } else {
+            progressLabel.textContent = 'Finalizing results...';
+        }
+    }
+
+    timer = setInterval(updateProgress, 100);
+    updateProgress();
+
+    const csrfInput = document.querySelector('[name=csrfmiddlewaretoken]');
+    const csrfToken = csrfInput ? csrfInput.value : '';
+
+    fetch('{% url "career:analyze_api" %}', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: {
+            'X-CSRFToken': csrfToken,
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: ''
+    }).then(response => response.json()).then(data => {
+        clearInterval(timer);
+        if (data.redirect) {
+            window.location.href = data.redirect;
+        } else {
+            progressLabel.textContent = 'Analysis failed. Please try again.';
+        }
+    }).catch(() => {
+        clearInterval(timer);
+        progressLabel.textContent = 'Analysis failed. Please refresh the page.';
+    });
+})();
+</script>
+{% endblock %}

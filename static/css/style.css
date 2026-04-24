@@ -82,6 +82,67 @@ a:hover { text-decoration: underline; }
 .pf-wrap--md { max-width: 580px; margin: 0 auto; }
 .pf-wrap--lg { max-width: 760px; margin: 0 auto; }
 
+/* Forms */
+.pf-card {
+    background: var(--pf-surface);
+    border: 1px solid var(--pf-border);
+    border-radius: var(--pf-radius-xl);
+    box-shadow: 0 20px 45px rgba(15, 23, 42, 0.05);
+    padding: 32px;
+}
+
+.pf-form {
+    display: grid;
+    gap: 18px;
+}
+
+.pf-field {
+    display: grid;
+    gap: 8px;
+}
+
+.pf-field label {
+    font-size: 14px;
+    color: var(--pf-text-2);
+    font-weight: 600;
+}
+
+.pf-input,
+.pf-textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid var(--pf-border);
+    border-radius: var(--pf-radius);
+    background: var(--pf-surface);
+    color: var(--pf-text);
+    font: inherit;
+}
+
+.pf-textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.pf-form__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+}
+
+.pf-form-help {
+    font-size: 13px;
+    color: var(--pf-text-3);
+}
+
+.pf-alert { /* reused for form messages */
+    padding: 14px 18px;
+    border-radius: var(--pf-radius);
+    background: #fef2f2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+}
+
 /* ─────────────────────────────────────────────
    HEADER
    ───────────────────────────────────────────── */
@@ -377,6 +438,29 @@ a:hover { text-decoration: underline; }
     transition: background .3s;
 }
 .pf-step__connector--done { background: var(--pf-accent); }
+
+.pf-roadmap-step {
+    border: 1px solid var(--pf-border);
+    transition: border-color .3s, background .3s, box-shadow .3s;
+}
+.pf-roadmap-step--locked {
+    opacity: .75;
+    border-color: #e5e7eb;
+    background: #fafafa;
+}
+.pf-roadmap-step--locked .pf-btn {
+    pointer-events: none;
+    opacity: .55;
+}
+.pf-resource-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.pf-resource-list li a {
+    width: 100%;
+    justify-content: space-between;
+}
 
 /* ─────────────────────────────────────────────
    FOOTER

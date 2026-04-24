@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Sign up · AI Career Guidance Coach{% endblock %}
+
+{% block content %}
+<div class="pf-page pf-page--centered">
+    <div class="pf-wrap pf-wrap--sm">
+        <div class="pf-card">
+            <h1>Sign up</h1>
+            <p class="pf-form-help">Create your account and continue to the chat onboarding to unlock your roadmap.</p>
+            {% if error %}
+                <div class="pf-alert">{{ error }}</div>
+            {% endif %}
+            <form class="pf-form" method="post" novalidate>
+                {% csrf_token %}
+                <div class="pf-field">
+                    <label for="name">Full name</label>
+                    <input id="name" name="name" type="text" class="pf-input" value="{{ form.name|default_if_none:'' }}" required>
+                </div>
+                <div class="pf-field">
+                    <label for="age">Age</label>
+                    <input id="age" name="age" type="number" class="pf-input" min="13" value="{{ form.age|default_if_none:'' }}" required>
+                </div>
+                <div class="pf-field">
+                    <label for="email">Email address</label>
+                    <input id="email" name="email" type="email" class="pf-input" value="{{ form.email|default_if_none:'' }}" required>
+                </div>
+                <div class="pf-field">
+                    <label for="password">Password</label>
+                    <input id="password" name="password" type="password" class="pf-input" required>
+                </div>
+                <div class="pf-field">
+                    <label for="password_confirm">Confirm password</label>
+                    <input id="password_confirm" name="password_confirm" type="password" class="pf-input" required>
+                </div>
+                <div class="pf-form__actions">
+                    <button type="submit" class="pf-btn pf-btn--primary">Create account</button>
+                    <a href="{% url 'accounts:signin' %}" class="pf-btn pf-btn--ghost">Already have an account?</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
