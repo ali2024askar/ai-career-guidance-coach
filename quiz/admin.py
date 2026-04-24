@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.html import format_html
 from django.urls import reverse
-from django.db.models import Count, Avg
+from django.db.models import Count, Q
 from .models import Question, Option, UserStepProgress
 
 
@@ -57,7 +57,7 @@ class QuestionAdmin(admin.ModelAdmin):
             super().get_queryset(request)
             .annotate(
                 _options=Count('options', distinct=True),
-                _correct=Count('options', filter=__import__('django.db.models', fromlist=['Q']).Q(options__is_correct=True)),
+                _correct=Count('options', filter=Q(options__is_correct=True)),
             )
         )
 
