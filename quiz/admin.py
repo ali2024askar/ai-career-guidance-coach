@@ -91,16 +91,17 @@ class QuestionAdmin(admin.ModelAdmin):
     def has_correct(self, obj):
         if obj._correct == 1:
             return format_html(
-                '<span style="color:#16a34a;font-weight:500">&#10003; set</span>'
+                '<span style="color:#16a34a;font-weight:500">{}</span>',
+                '✔ set'
             )
         elif obj._correct == 0:
             return format_html(
-                '<span style="color:#dc2626;font-weight:500">&#x2717; missing</span>'
+                '<span style="color:#dc2626;font-weight:500">{}</span>',
+                '✗ missing'
             )
         else:
             return format_html(
-                '<span style="color:#d97706;font-weight:500">'
-                '&#9888; {} correct</span>',
+                '<span style="color:#d97706;font-weight:500">⚠ {} correct</span>',
                 obj._correct
             )
 
@@ -155,16 +156,9 @@ class UserStepProgressAdmin(admin.ModelAdmin):
     @admin.display(description='result', ordering='passed')
     def result_badge(self, obj):
         if obj.passed:
-            return format_html(
-                '<span style="background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0;'
-                'padding:2px 10px;border-radius:999px;font-size:12px;font-weight:500">'
-                '&#10003; passed</span>'
-            )
-        return format_html(
-            '<span style="background:#fef2f2;color:#b91c1c;border:1px solid #fecaca;'
-            'padding:2px 10px;border-radius:999px;font-size:12px;font-weight:500">'
-            '&#10007; failed</span>'
-        )
+            return '<span style="background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:500">&#10003; passed</span>'
+        
+        return '<span style="background:#fef2f2;color:#b91c1c;border:1px solid #fecaca;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:500">&#10007; failed</span>'
 
     @admin.display(description='completed', ordering='done_at')
     def done_at_fmt(self, obj):
