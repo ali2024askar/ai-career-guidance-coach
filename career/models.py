@@ -19,6 +19,7 @@ class Resource(models.Model):
         ('article',       'Article'),
         ('book',          'Book'),
         ('documentation', 'Documentation'),
+        ('guide', 'Guide'),
     ]
 
     # Maps type → local static icon filename
@@ -29,6 +30,7 @@ class Resource(models.Model):
         'article':       'images/resource-icons/article.png',
         'book':          'images/resource-icons/book.png',
         'documentation': 'images/resource-icons/documentation.png',
+        'guide':         'images/resource-icons/guide.png',
     }
 
     career = models.ForeignKey(Career, on_delete=models.CASCADE, related_name='resources')
