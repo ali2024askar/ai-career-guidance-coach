@@ -15,10 +15,13 @@
             <div class="pf-resource-list-grid">
                 {% for resource in resources %}
                 <a href="{{ resource.url }}" target="_blank" class="pf-resource-card pf-resource-card--list pf-anim-scale-up" style="--i:{{ forloop.counter0 }}">
-                    <div>
-                        <div class="pf-resource-card__label">{{ resource.get_type_display }}</div>
-                        <strong>{{ resource.title }}</strong>
-                        <p>{{ resource.career.title }}</p>
+                    <div style="display:flex; align-items:flex-start; gap:14px;">
+                        <img src="{{ resource.effective_logo_url }}" alt="" class="pf-resource-card__icon">
+                        <div>
+                            <div class="pf-resource-card__label">{{ resource.get_type_display }}</div>
+                            <strong>{{ resource.title }}</strong>
+                            <p>{{ resource.career.title }}</p>
+                        </div>
                     </div>
                     <span class="pf-badge">Open</span>
                 </a>

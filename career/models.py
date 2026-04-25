@@ -1,4 +1,5 @@
 from django.db import models
+from django.templatetags.static import static
 
 
 class Career(models.Model):
@@ -19,21 +20,15 @@ class Resource(models.Model):
         ('book',          'Book'),
         ('documentation', 'Documentation'),
     ]
-    ICON_MAP = {
-        'platform':      'grid',
-        'course':        'mortarboard',
-        'video':         'play-circle',
-        'article':       'file-text',
-        'book':          'book',
-        'documentation': 'file-earmark-text',
-    }
-    LOGO_MAP = {
-        'platform':      'https://img.icons8.com/color/24/000000/grid.png',
-        'course':        'https://img.icons8.com/color/24/000000/mortarboard.png',
-        'video':         'https://img.icons8.com/color/24/000000/play.png',
-        'article':       'https://img.icons8.com/color/24/000000/document.png',
-        'book':          'https://img.icons8.com/color/24/000000/book.png',
-        'documentation': 'https://img.icons8.com/color/24/000000/document.png',
+
+    # Maps type → local static icon filename
+    ICON_FILE_MAP = {
+        'platform':      'images/resource-icons/platform.png',
+        'course':        'images/resource-icons/course.png',
+        'video':         'images/resource-icons/video.png',
+        'article':       'images/resource-icons/article.png',
+        'book':          'images/resource-icons/book.png',
+        'documentation': 'images/resource-icons/documentation.png',
     }
 
     career = models.ForeignKey(Career, on_delete=models.CASCADE, related_name='resources')
@@ -41,15 +36,15 @@ class Resource(models.Model):
     title  = models.CharField(max_length=200)
     url    = models.URLField(blank=True)
     type   = models.CharField(max_length=20, choices=TYPE_CHOICES, default='platform')
-    logo_url = models.URLField(blank=True, help_text="URL to resource logo/icon")
-
-    @property
-    def icon(self):
-        return self.ICON_MAP.get(self.type, 'link')
+    logo_url = models.URLField(blank=True, help_text="Custom logo URL. Leave blank to use the default icon for this type.")
 
     @property
     def effective_logo_url(self):
-        return self.logo_url or self.LOGO_MAP.get(self.type, 'https://cdn.jsdelivr.net/npm/feather-icons@4.29.0/dist/icons/link.svg')
+        """Return custom logo_url if set, otherwise the local static icon for the type."""
+        if self.logo_url:
+            return self.logo_url
+        icon_path = self.ICON_FILE_MAP.get(self.type, 'images/resource-icons/platform.png')
+        return static(icon_path)
 
     def __str__(self):
         return f"{self.title} ({self.career.title})"

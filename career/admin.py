@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.templatetags.static import static
 from django.utils.html import format_html
 from django.urls import reverse
 from django.db.models import Count
@@ -11,8 +12,18 @@ from .models import Career, Resource, RoadmapStep
 class ResourceInline(admin.TabularInline):
     model   = Resource
     extra   = 1
-    fields  = ('title', 'url', 'type')
+    fields  = ('title', 'url', 'type', 'step', 'icon_preview')
+    readonly_fields = ('icon_preview',)
     ordering = ('type', 'title')
+
+    @admin.display(description='icon')
+    def icon_preview(self, obj):
+        if obj.pk:
+            return format_html(
+                '<img src="{}" style="width:28px;height:28px;border-radius:6px;">',
+                obj.effective_logo_url,
+            )
+        return '—'
 
 
 # ──────────────────────────────────────────────────────────
@@ -103,39 +114,59 @@ class CareerPathAdmin(admin.ModelAdmin):
 @admin.register(Resource)
 class ResourceAdmin(admin.ModelAdmin):
 
-    list_display  = ('title', 'type_badge', 'career', 'url_link')
+    list_display  = ('icon_thumb', 'title', 'type_badge', 'career', 'step', 'url_link')
     list_filter   = ('type', 'career')
     search_fields = ('title', 'url')
     ordering      = ('career', 'type', 'title')
-    list_select_related = ('career',)
+    list_select_related = ('career', 'step')
 
     fieldsets = (
         (None, {
-            'fields': ('career', 'title', 'type', 'url'),
+            'fields': ('career', 'step', 'title', 'type', 'url', 'logo_url', 'icon_preview'),
         }),
     )
+    readonly_fields = ('icon_preview',)
+
+    @admin.display(description='')
+    def icon_thumb(self, obj):
+        return format_html(
+            '<img src="{}" style="width:28px;height:28px;border-radius:6px;">',
+            obj.effective_logo_url,
+        )
+
+    @admin.display(description='icon preview')
+    def icon_preview(self, obj):
+        if not obj.pk:
+            return 'Save to see preview'
+        html = '<div style="display:flex;align-items:center;gap:12px;">'
+        html += '<img src="{}" style="width:48px;height:48px;border-radius:10px;">'.format(obj.effective_logo_url)
+        html += '<span style="color:#6b7280;font-size:13px;">Auto-selected from <strong>type</strong>. '
+        html += 'Set a custom <em>logo URL</em> to override.</span></div>'
+        return format_html(html)
 
     @admin.display(description='type', ordering='type')
     def type_badge(self, obj):
         colors = {
-            'platform': ('#eef2ff', '#4338ca'),
-            'course':   ('#f0fdf4', '#15803d'),
-            'video':    ('#fff7ed', '#c2410c'),
-            'article':  ('#f0f9ff', '#0369a1'),
-            'book':     ('#fdf4ff', '#7e22ce'),
+            'platform':      ('#eef2ff', '#4338ca'),
+            'course':        ('#f0fdf4', '#15803d'),
+            'video':         ('#fff7ed', '#c2410c'),
+            'article':       ('#f0f9ff', '#0369a1'),
+            'book':          ('#fdf4ff', '#7e22ce'),
+            'documentation': ('#fff7ed', '#9a3412'),
         }
         bg, fg = colors.get(obj.type, ('#f3f4f6', '#374151'))
         return format_html(
+            '<img src="{}" style="width:18px;height:18px;border-radius:4px;vertical-align:middle;margin-right:6px;">'
             '<span style="background:{};color:{};padding:2px 9px;'
             'border-radius:999px;font-size:11px;font-weight:500">{}</span>',
-            bg, fg, obj.get_type_display()
+            obj.effective_logo_url, bg, fg, obj.get_type_display()
         )
 
     @admin.display(description='URL')
     def url_link(self, obj):
         if not obj.url:
             return '—'
-        short = obj.url[:50] + ('…' if len(obj.url) > 50 else '')
+        short = obj.url[:50] + ('...' if len(obj.url) > 50 else '')
         return format_html('<a href="{}" target="_blank">{}</a>', obj.url, short)
 
 

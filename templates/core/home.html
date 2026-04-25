@@ -41,6 +41,7 @@
             <div class="pf-loaded-resources">
                 {% for resource in resources %}
                 <a href="{{ resource.url }}" target="_blank" class="pf-resource-card pf-anim-scale-up" style="--i:{{ forloop.counter0 }}">
+                    <img src="{{ resource.effective_logo_url }}" alt="" class="pf-resource-card__icon">
                     <div>
                         <strong>{{ resource.title }}</strong>
                         <p>{{ resource.career.title }}</p>
