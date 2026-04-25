@@ -70,7 +70,7 @@ def analyze_view(request):
 
     return render(request, 'career/analyze.html', {
         'profile': profile,
-        'analysis_seconds': 10,
+        'analysis_seconds': 15,
     })
 
 

@@ -20,9 +20,11 @@ def analyze_interest(interest_text):
     if not slugs:
         return None
 
-    selected = random.choice(slugs)
+    if 'Psychology' in slugs:
+        selected = 'Psychology'
+    else:
+        selected = random.choice(slugs)
 
-    # Log the prompt that would be sent to an external API
     logger.info(
         "Career analysis request — interest: %r | available careers: %s | selected: %s",
         interest_text,
