@@ -6,7 +6,7 @@
         {# ── Logo ── #}
         <a href="{% url 'home' %}" class="pf-logo">
             <img class="pf-logo__icon" src="{% static 'images/logo.png' %}" alt="Logo">
-            <span class="pf-logo__name">ai career <em>guidance coach</em></span>
+            <span class="pf-logo__name">AI career <em>guidance coach</em></span>
         </a>
 
         {# ── Logged-in nav ── #}
@@ -15,15 +15,15 @@
         <nav class="pf-header__nav" aria-label="main navigation">
             <a href="{% url 'career:chat' %}"
                class="pf-nav-link {% if request.resolver_match.url_name == 'chat' %}pf-nav-link--active{% endif %}">
-                interests
+                INTERESTS
             </a>
             <a href="{% url 'career:roadmap' %}"
                class="pf-nav-link {% if request.resolver_match.url_name == 'roadmap' %}pf-nav-link--active{% endif %}">
-                my roadmap
+               MY ROADMAP
             </a>
             <a href="#"
                class="pf-nav-link {% if request.resolver_match.url_name == 'resources' %}pf-nav-link--active{% endif %}">
-                resources
+                RESOURCES
             </a>
         </nav>
 
@@ -44,10 +44,10 @@
         {% else %}
 
         <nav class="pf-header__nav" aria-label="main navigation">
-            <a href="{% url 'home' %}" class="pf-nav-link {% if request.resolver_match.url_name == 'home' %}pf-nav-link--active{% endif %}">home</a>
-            <a href="{% url 'how-it-works' %}" class="pf-nav-link {% if request.resolver_match.url_name == 'how-it-works' %}pf-nav-link--active{% endif %}">how it works</a>
-            <a href="{% url 'career-paths' %}" class="pf-nav-link {% if request.resolver_match.url_name == 'career-paths' %}pf-nav-link--active{% endif %}">career paths</a>
-            <a href="{% url 'resources' %}" class="pf-nav-link {% if request.resolver_match.url_name == 'resources' %}pf-nav-link--active{% endif %}">resources</a>
+            <a href="{% url 'home' %}" class="pf-nav-link {% if request.resolver_match.url_name == 'home' %}pf-nav-link--active{% endif %}">HOME</a>
+            <a href="{% url 'how-it-works' %}" class="pf-nav-link {% if request.resolver_match.url_name == 'how-it-works' %}pf-nav-link--active{% endif %}">HOW IT WORKS</a>
+            <a href="{% url 'career-paths' %}" class="pf-nav-link {% if request.resolver_match.url_name == 'career-paths' %}pf-nav-link--active{% endif %}">CAREER PATHS</a>
+            <a href="{% url 'resources' %}" class="pf-nav-link {% if request.resolver_match.url_name == 'resources' %}pf-nav-link--active{% endif %}">RESOURCES</a>
         </nav>
 
         <div class="pf-header__actions">

@@ -4,28 +4,17 @@
 
 {% block content %}
 <div class="pf-page pf-page--centered">
-    <div class="pf-wrap pf-wrap--sm">
+    <div class="pf-wrap pf-wrap--lg">
         <div class="pf-card pf-anim-fade-up">
-            <h1>Tell us about your goals</h1>
-            <p class="pf-form-help">Use this chat to share your interests and get matched to the right roadmap.</p>
-
-            <div class="pf-form">
-                {% if user_message %}
-                    <div class="pf-field" style="background:#f8fafc;border-radius:12px;padding:14px;">
-                        <p style="margin:8px 0 0;">{{ user_message }}</p>
-                    </div>
-                {% else %}
-                    <div class="pf-field" style="background:#f8fafc;border-radius:12px;padding:14px;">
-                        <p>Write your interest. Something like this: “I like art and tech.”</p>
-                    </div>
-                {% endif %}
-            </div>
+            <h2 class="pf-chat__title">Tell us about your interest</h2>
+            <p class="pf-form-help pf-form-help--lg">Use this chat to share your interests and get matched to the right roadmap.</p>
+            <br>
+          
 
             <form class="pf-form" method="post" novalidate>
                 {% csrf_token %}
                 <div class="pf-field">
-                    <label for="message">Your interest</label>
-                    <textarea id="message" name="message" class="pf-textarea" placeholder="I like art and tech" required></textarea>
+                    <textarea id="message" name="message" class="pf-textarea" placeholder="ex: I like art and technology" required></textarea>
                 </div>
                 <div class="pf-form__actions">
                     <button type="submit" class="pf-btn pf-btn--primary">Send</button>

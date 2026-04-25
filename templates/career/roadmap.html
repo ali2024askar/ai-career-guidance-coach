@@ -7,12 +7,14 @@
     <div class="pf-wrap pf-wrap--lg">
         <div class="pf-card pf-anim-fade-up">
             <h1>My roadmap</h1>
-            <p class="pf-form-help">Your current roadmap is shown below. Complete the chat onboarding if you haven’t already.</p>
 
             {% if career %}
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                    <p style="margin: 0;"><strong>Career path:</strong> {{ career.title }}</p>
-                    <a href="{% url 'career:reset_interest' %}" class="pf-btn pf-btn--outline pf-btn--sm" onclick="return confirm('Are you sure you want to clear your interests and start over? This will reset your progress.')" style="font-size: 12px;">
+                <div class="pf-career-banner pf-anim-scale-up" style="--i:0">
+                    <div class="pf-career-banner__inner">
+                        <span class="pf-career-banner__pill">Career path</span>
+                        <h2 class="pf-career-banner__title">{{ career.title }}</h2>
+                    </div>
+                    <a href="{% url 'career:reset_interest' %}" class="pf-btn pf-btn--outline pf-btn--sm pf-career-banner__action" onclick="return confirm('Are you sure you want to clear your interests and start over? This will reset your progress.')">
                         Clear my interest
                     </a>
                 </div>
@@ -27,14 +29,22 @@
                     </div>
                 {% endif %}
                 {% if roadmap_steps %}
-                    <div class="pf-steps" style="margin-top:24px; flex-wrap: wrap; gap: 14px;">
+                    <div class="pf-steps pf-steps--flow" style="margin-top:24px; flex-wrap: wrap; gap: 14px;">
                         {% for item in roadmap_steps %}
-                            <div class="pf-step {% if item.passed %}pf-step--done{% elif item.unlocked %}pf-step--active{% endif %}">
-                                <div class="pf-step__num">{{ forloop.counter }}</div>
+                            <div class="pf-step {% if item.passed %}pf-step--done{% elif item.unlocked %}pf-step--active{% endif %}" style="--i:{{ forloop.counter0 }}">
+                                <div class="pf-step__num">
+                                    {% if item.passed %}
+                                        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                            <path d="M5 12.5L10 17L19 7.5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </svg>
+                                    {% else %}
+                                        {{ forloop.counter }}
+                                    {% endif %}
+                                </div>
                                 <div class="pf-step__label">{{ item.step.week_label }}</div>
                             </div>
                             {% if not forloop.last %}
-                                <div class="pf-step__connector {% if item.passed %}pf-step__connector--done{% endif %}"></div>
+                                <div class="pf-step__connector {% if item.passed %}pf-step__connector--done{% endif %}" style="--i:{{ forloop.counter0 }}"></div>
                             {% endif %}
                         {% endfor %}
                     </div>
@@ -72,10 +82,7 @@
                                         <p class="pf-form-help" style="margin-top:14px;">No resources are available for this step yet.</p>
                                     {% endif %}
                                 {% elif item.unlocked %}
-                                    <div style="margin-top:18px; display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between;">
-                                        <span style="font-size:13px; color:#6b7280;">This step is unlocked. Use these resources and then take the quiz to continue.</span>
-                                        <a href="{% url 'quiz:step_quiz' item.step.pk %}" class="pf-btn pf-btn--primary">Take quiz</a>
-                                    </div>
+                                    <p style="margin:18px 0 0; font-size:13px; color:#6b7280;">This step is unlocked. Use these resources and then take the quiz to continue.</p>
                                     {% if item.resources %}
                                         <ul class="pf-resource-list" style="margin:16px 0 0; padding:0; list-style:none; display:grid; gap:10px;">
                                             {% for resource in item.resources %}
@@ -89,6 +96,9 @@
                                             {% endfor %}
                                         </ul>
                                     {% endif %}
+                                    <div style="margin-top:18px; display:flex; justify-content:flex-end;">
+                                        <a href="{% url 'quiz:step_quiz' item.step.pk %}" class="pf-btn pf-btn--primary">Take quiz</a>
+                                    </div>
                                 {% else %}
                                     <div style="margin-top:18px; color:#6b7280; font-size:13px;">Locked until earlier steps are passed.</div>
                                 {% endif %}

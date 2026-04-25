@@ -7,7 +7,7 @@
     <div class="pf-wrap pf-wrap--lg">
         <section class="pf-hero pf-anim-fade-up">
             <div class="pf-hero__card">
-                <h1>Discover career paths that fit your interests</h1>
+                <h3>Discover career paths that fit your interests</h1>
                 <p>Share what excites you, explore curated career paths, and access the best resources for your first steps.</p>
                 <div class="pf-hero__actions">
                     <a href="{% url 'how-it-works' %}" class="pf-btn pf-btn--primary">How it works</a>
@@ -16,41 +16,8 @@
             </div>
         </section>
 
-        <section class="pf-section">
-            <div class="pf-section__intro pf-anim-fade-up" style="--i:1">
-                <span class="pf-tag">Featured career paths</span>
-                <h2>Browse a selection of paths we support today.</h2>
-                <p>These career paths are drawn from our roadmap engine and showcase the kind of structured learning journeys we build for you.</p>
-            </div>
-            <div class="pf-card-grid">
-                {% for career in careers %}
-                <article class="pf-card pf-card--light pf-anim-scale-up" style="--i:{{ forloop.counter0 }}">
-                    <h3>{{ career.title }}</h3>
-                    <p>{{ career.description|default:'A practical career path to help you build skills and stay focused.' }}</p>
-                </article>
-                {% endfor %}
-            </div>
-        </section>
-
-        <section class="pf-section">
-            <div class="pf-section__intro pf-anim-fade-up" style="--i:2">
-                <span class="pf-tag">Quick resources</span>
-                <h2>Resources that help you get started fast.</h2>
-                <p>These are examples of actionable content and tools we pair with the career paths in our system.</p>
-            </div>
-            <div class="pf-loaded-resources">
-                {% for resource in resources %}
-                <a href="{{ resource.url }}" target="_blank" class="pf-resource-card pf-anim-scale-up" style="--i:{{ forloop.counter0 }}">
-                    <img src="{{ resource.effective_logo_url }}" alt="" class="pf-resource-card__icon">
-                    <div>
-                        <strong>{{ resource.title }}</strong>
-                        <p>{{ resource.career.title }}</p>
-                    </div>
-                    <span class="pf-badge">{{ resource.get_type_display }}</span>
-                </a>
-                {% endfor %}
-            </div>
-        </section>
+   
+    
     </div>
 </div>
 {% endblock %}
