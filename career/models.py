@@ -12,25 +12,28 @@ class Career(models.Model):
 
 class Resource(models.Model):
     TYPE_CHOICES = [
-        ('platform', 'Platform'),
-        ('course',   'Course'),
-        ('video',    'Video'),
-        ('article',  'Article'),
-        ('book',     'Book'),
+        ('platform',      'Platform'),
+        ('course',        'Course'),
+        ('video',         'Video'),
+        ('article',       'Article'),
+        ('book',          'Book'),
+        ('documentation', 'Documentation'),
     ]
     ICON_MAP = {
-        'platform': 'grid',
-        'course':   'mortarboard',
-        'video':    'play-circle',
-        'article':  'file-text',
-        'book':     'book',
+        'platform':      'grid',
+        'course':        'mortarboard',
+        'video':         'play-circle',
+        'article':       'file-text',
+        'book':          'book',
+        'documentation': 'file-earmark-text',
     }
     LOGO_MAP = {
-        'platform': 'https://img.icons8.com/color/24/000000/grid.png',
-        'course':   'https://img.icons8.com/color/24/000000/mortarboard.png',
-        'video':    'https://img.icons8.com/color/24/000000/play.png',
-        'article':  'https://img.icons8.com/color/24/000000/document.png',
-        'book':     'https://img.icons8.com/color/24/000000/book.png',
+        'platform':      'https://img.icons8.com/color/24/000000/grid.png',
+        'course':        'https://img.icons8.com/color/24/000000/mortarboard.png',
+        'video':         'https://img.icons8.com/color/24/000000/play.png',
+        'article':       'https://img.icons8.com/color/24/000000/document.png',
+        'book':          'https://img.icons8.com/color/24/000000/book.png',
+        'documentation': 'https://img.icons8.com/color/24/000000/document.png',
     }
 
     career = models.ForeignKey(Career, on_delete=models.CASCADE, related_name='resources')
