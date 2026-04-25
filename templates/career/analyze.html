@@ -5,9 +5,9 @@
 {% block content %}
 <div class="pf-page pf-page--centered">
     <div class="pf-wrap pf-wrap--sm">
-        <div class="pf-card" style="text-align:center;">
+        <div class="pf-card pf-anim-fade-up" style="text-align:center;">
             <h1>Analyzing your career interest</h1>
-            <p class="pf-form-help">We’re building your roadmap now. This may take a few moments.</p>
+            <p class="pf-form-help">We're building your roadmap now. This may take a few moments.</p>
 
             <div class="pf-progress-shell" style="margin:32px 0;">
                 <div class="pf-progress-bar" id="progress-bar"></div>
@@ -39,43 +39,62 @@
 .pf-progress-bar {
     width: 0;
     height: 100%;
-    background: linear-gradient(90deg, #2563eb 0%, #3b82f6 100%);
+    background: linear-gradient(90deg, #4f46e5 0%, #6366f1 50%, #818cf8 100%);
+    background-size: 200% 100%;
     border-radius: 999px;
-    transition: width 0.2s ease;
+    transition: width 0.3s ease;
+    animation: pf-bar-shimmer 1.5s linear infinite;
+}
+@keyframes pf-bar-shimmer {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
 }
 </style>
 {% endblock %}
 
 {% block extra_js %}
 <script>
-(function() {
-    const totalMs = {{ analysis_seconds|default:1 }} * 1000;
-    const startTime = Date.now();
-    const progressBar = document.getElementById('progress-bar');
-    const progressLabel = document.getElementById('progress-label');
-    const progressPercent = document.getElementById('progress-percent');
-    let timer;
+(function () {
+    var WAIT_MS   = {{ analysis_seconds|default:10 }} * 1000;
+    var startTime = Date.now();
+    var bar       = document.getElementById('progress-bar');
+    var label     = document.getElementById('progress-label');
+    var pct       = document.getElementById('progress-percent');
+    var timer, apiData;
+
+    var steps = [
+        [0,  'Preparing analysis...'],
+        [15, 'Reading your interests...'],
+        [35, 'Matching career paths...'],
+        [55, 'Building your roadmap...'],
+        [75, 'Selecting resources...'],
+        [90, 'Finalizing results...'],
+    ];
 
     function updateProgress() {
-        const elapsed = Date.now() - startTime;
-        const ratio = Math.min(elapsed / totalMs, 1);
-        const percent = Math.round(ratio * 100);
-        progressBar.style.width = percent + '%';
-        progressPercent.textContent = percent + '%';
-        if (percent < 100) {
-            progressLabel.textContent = 'Analyzing your interest...';
-        } else {
-            progressLabel.textContent = 'Finalizing results...';
+        var elapsed = Date.now() - startTime;
+        var ratio   = Math.min(elapsed / WAIT_MS, 1);
+        var percent = Math.round(ratio * 100);
+
+        bar.style.width = percent + '%';
+        pct.textContent = percent + '%';
+
+        for (var i = steps.length - 1; i >= 0; i--) {
+            if (percent >= steps[i][0]) {
+                label.textContent = steps[i][1];
+                break;
+            }
         }
     }
 
-    timer = setInterval(updateProgress, 100);
+    timer = setInterval(updateProgress, 80);
     updateProgress();
 
-    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
-    const token = csrfToken ? csrfToken.value : '';
+    /* ── Fire API call immediately ── */
+    var csrfEl = document.querySelector('[name=csrfmiddlewaretoken]');
+    var token  = csrfEl ? csrfEl.value : '';
 
-    fetch('{% url "career:analyze_api" %}', {
+    var apiCall = fetch('{% url "career:analyze_api" %}', {
         method: 'POST',
         credentials: 'same-origin',
         headers: {
@@ -83,16 +102,31 @@
             'Content-Type': 'application/x-www-form-urlencoded',
         },
         body: ''
-    }).then(response => response.json()).then(data => {
+    }).then(function (r) { return r.json(); });
+
+    /* ── Minimum-wait timer ── */
+    var minWait = new Promise(function (resolve) {
+        setTimeout(resolve, WAIT_MS);
+    });
+
+    /* ── Wait for BOTH api + timer, then redirect ── */
+    Promise.all([apiCall, minWait]).then(function (results) {
+        var data = results[0];
         clearInterval(timer);
-        if (data.redirect) {
-            window.location.href = data.redirect;
-        } else {
-            progressLabel.textContent = 'Analysis failed. Please try again.';
-        }
-    }).catch(() => {
+        bar.style.width = '100%';
+        pct.textContent = '100%';
+        label.textContent = 'Done! Redirecting...';
+
+        setTimeout(function () {
+            if (data && data.redirect) {
+                window.location.href = data.redirect;
+            } else {
+                label.textContent = 'Analysis failed. Please try again.';
+            }
+        }, 600);
+    })['catch'](function () {
         clearInterval(timer);
-        progressLabel.textContent = 'Analysis failed. Please refresh the page.';
+        label.textContent = 'Analysis failed. Please refresh the page.';
     });
 })();
 </script>

@@ -3,74 +3,44 @@ from django.shortcuts import redirect, render
 from django.urls import reverse
 from .models import Career, RoadmapStep, Resource
 from accounts.models import UserProfile
-from src.career_analyzer import career_analyzer
 
 
-def _generate_analysis(profile):
-    """Generate personalized analysis using OpenAI"""
-    interest_text = profile.interest_text.strip()
-    if not interest_text:
-        return "Welcome! Please share your career interests so we can create a personalized roadmap for you."
-
-    # Get the matched career slug
-    matched_career_slug = career_analyzer.analyze_interest(interest_text)
-
-    # Generate personalized analysis text
-    if matched_career_slug:
-        return career_analyzer.generate_analysis_text(interest_text, matched_career_slug)
-    else:
-        # Fallback if no specific match
-        return f"Thanks for sharing your interest in {interest_text}. Based on this, we've created a personalized roadmap with key learning milestones."
-
-
-def _assign_career(profile):
-    """Assign career using OpenAI analysis"""
-    if not profile.interest_text:
-        return None
-
-    # Use OpenAI to determine the best career match
-    matched_slug = career_analyzer.analyze_interest(profile.interest_text)
-
-    if matched_slug:
-        # Find the career in database (case-insensitive)
-        career = Career.objects.filter(slug__iexact=matched_slug).first()
-        if career:
-            return career
-
-    # Fallback to first available career if no match or API error
-    return Career.objects.first()
+def _require_profile(request):
+    """Return (profile, None) or (None, redirect_response)."""
+    user_id = request.session.get('user_id')
+    if not user_id:
+        return None, redirect(reverse('accounts:signin'))
+    try:
+        return UserProfile.objects.get(pk=user_id), None
+    except UserProfile.DoesNotExist:
+        request.session.flush()
+        return None, redirect(reverse('accounts:signin'))
 
 
 def _run_analysis(profile):
-    profile.analysis_result = _generate_analysis(profile)
-    profile.career = _assign_career(profile)
+    """Analyse interest, assign a career, and save — one call only."""
+    from src.career_analyzer import analyze_interest, generate_analysis_text
+
+    matched_slug = analyze_interest(profile.interest_text)
+
+    career = None
+    if matched_slug:
+        career = Career.objects.filter(slug__iexact=matched_slug).first()
+    if not career:
+        career = Career.objects.first()
+
+    profile.career = career
+    profile.analysis_result = generate_analysis_text(
+        profile.interest_text,
+        career.title if career else 'a career',
+    )
     profile.save()
 
 
-def _get_demo_roadmap():
-    # Return the first available career, or create a default if none exist
-    career = Career.objects.first()
-    if not career:
-        career, _ = Career.objects.get_or_create(
-            slug='default-career',
-            defaults={
-                'title': 'Default Career Path',
-                'description': 'A default career path when no others are available.',
-            }
-        )
-    return career
-
-
 def chat_view(request):
-    user_id = request.session.get('user_id')
-    if not user_id:
-        return redirect(reverse('accounts:signin'))
-
-    try:
-        profile = UserProfile.objects.get(pk=user_id)
-    except UserProfile.DoesNotExist:
-        request.session.flush()
-        return redirect(reverse('accounts:signin'))
+    profile, bail = _require_profile(request)
+    if bail:
+        return bail
 
     user_message = request.session.get('user_message', '')
 
@@ -91,22 +61,16 @@ def chat_view(request):
 
 
 def analyze_view(request):
-    user_id = request.session.get('user_id')
-    if not user_id:
-        return redirect(reverse('accounts:signin'))
-
-    try:
-        profile = UserProfile.objects.get(pk=user_id)
-    except UserProfile.DoesNotExist:
-        request.session.flush()
-        return redirect(reverse('accounts:signin'))
+    profile, bail = _require_profile(request)
+    if bail:
+        return bail
 
     if not profile.interest_text:
         return redirect(reverse('career:chat'))
 
     return render(request, 'career/analyze.html', {
         'profile': profile,
-        'analysis_seconds': 1,
+        'analysis_seconds': 10,
     })
 
 
@@ -128,16 +92,12 @@ def analyze_api_view(request):
 
 
 def reset_interest_view(request):
-    user_id = request.session.get('user_id')
-    if not user_id:
-        return redirect(reverse('accounts:signin'))
+    profile, bail = _require_profile(request)
+    if bail:
+        return bail
 
-    try:
-        profile = UserProfile.objects.get(pk=user_id)
-    except UserProfile.DoesNotExist:
-        request.session.flush()
-        return redirect(reverse('accounts:signin'))
-
+    # Clear all progress — back to square one
+    profile.progress.all().delete()
     profile.interest_text = ''
     profile.analysis_result = ''
     profile.career = None
@@ -147,15 +107,9 @@ def reset_interest_view(request):
 
 
 def roadmap_view(request):
-    user_id = request.session.get('user_id')
-    if not user_id:
-        return redirect(reverse('accounts:signin'))
-
-    try:
-        profile = UserProfile.objects.get(pk=user_id)
-    except UserProfile.DoesNotExist:
-        request.session.flush()
-        return redirect(reverse('accounts:signin'))
+    profile, bail = _require_profile(request)
+    if bail:
+        return bail
 
     career = profile.career
     demo_mode = False
@@ -167,8 +121,8 @@ def roadmap_view(request):
     if career:
         steps = list(career.steps.all())
         progress_by_step = {
-            progress.step_id: progress
-            for progress in profile.progress.filter(step__career=career)
+            p.step_id: p
+            for p in profile.progress.filter(step__career=career)
         }
 
         previous_passed = True
@@ -190,3 +144,16 @@ def roadmap_view(request):
         'demo_mode': demo_mode,
         'roadmap_steps': roadmap_steps,
     })
+
+
+def _get_demo_roadmap():
+    career = Career.objects.first()
+    if not career:
+        career, _ = Career.objects.get_or_create(
+            slug='default-career',
+            defaults={
+                'title': 'Default Career Path',
+                'description': 'A default career path when no others are available.',
+            },
+        )
+    return career

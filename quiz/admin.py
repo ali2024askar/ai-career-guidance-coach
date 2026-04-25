@@ -157,9 +157,16 @@ class UserStepProgressAdmin(admin.ModelAdmin):
     @admin.display(description='result', ordering='passed')
     def result_badge(self, obj):
         if obj.passed:
-            return '<span style="background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:500">&#10003; passed</span>'
-        
-        return '<span style="background:#fef2f2;color:#b91c1c;border:1px solid #fecaca;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:500">&#10007; failed</span>'
+            return mark_safe(
+                '<span style="background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0;'
+                'padding:2px 10px;border-radius:999px;font-size:12px;font-weight:500">'
+                '&#10003; passed</span>'
+            )
+        return mark_safe(
+            '<span style="background:#fef2f2;color:#b91c1c;border:1px solid #fecaca;'
+            'padding:2px 10px;border-radius:999px;font-size:12px;font-weight:500">'
+            '&#10007; failed</span>'
+        )
 
     @admin.display(description='completed', ordering='done_at')
     def done_at_fmt(self, obj):

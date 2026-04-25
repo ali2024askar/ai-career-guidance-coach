@@ -88,5 +88,5 @@ class UserProfileAdmin(admin.ModelAdmin):
     def career_link(self, obj):
         if not obj.career:
             return '—'
-        url = reverse('admin:career_careerpath_change', args=[obj.career.pk])
+        url = reverse('admin:career_career_change', args=[obj.career.pk])
         return format_html('<a href="{}">{}</a>', url, obj.career.title)
