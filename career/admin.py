@@ -114,7 +114,7 @@ class CareerPathAdmin(admin.ModelAdmin):
 @admin.register(Resource)
 class ResourceAdmin(admin.ModelAdmin):
 
-    list_display  = ('icon_thumb', 'title', 'type_badge', 'career', 'step', 'url_link')
+    list_display  = ( 'type_badge', 'title', 'career', 'step', 'url_link')
     list_filter   = ('type', 'career')
     search_fields = ('title', 'url')
     ordering      = ('career', 'type', 'title')
@@ -127,22 +127,22 @@ class ResourceAdmin(admin.ModelAdmin):
     )
     readonly_fields = ('icon_preview',)
 
-    @admin.display(description='')
-    def icon_thumb(self, obj):
-        return format_html(
-            '<img src="{}" style="width:28px;height:28px;border-radius:6px;">',
-            obj.effective_logo_url,
-        )
+
 
     @admin.display(description='icon preview')
     def icon_preview(self, obj):
         if not obj.pk:
             return 'Save to see preview'
-        html = '<div style="display:flex;align-items:center;gap:12px;">'
-        html += '<img src="{}" style="width:48px;height:48px;border-radius:10px;">'.format(obj.effective_logo_url)
-        html += '<span style="color:#6b7280;font-size:13px;">Auto-selected from <strong>type</strong>. '
-        html += 'Set a custom <em>logo URL</em> to override.</span></div>'
-        return format_html(html)
+
+        return format_html(
+            '<div style="display:flex;align-items:center;gap:12px;">'
+            '<img src="{}" style="width:48px;height:48px;border-radius:10px;">'
+            '<span style="color:#6b7280;font-size:13px;">'
+            'Auto-selected from <strong>type</strong>. '
+            'Set a custom <em>logo URL</em> to override.'
+            '</span></div>',
+            obj.effective_logo_url,
+        )
 
     @admin.display(description='type', ordering='type')
     def type_badge(self, obj):

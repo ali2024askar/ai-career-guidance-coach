@@ -30,8 +30,8 @@ def create_sample_data():
                     'title': 'Master Python Fundamentals',
                     'description': 'Learn Python programming essentials for AI development',
                     'resources': [
-                        {'title': 'Python for Data Science', 'url': 'https://example.com/python-ds', 'type': 'course', 'logo': 'https://via.placeholder.com/50x50/2563eb/ffffff?text=Py'},
-                        {'title': 'Automate the Boring Stuff', 'url': 'https://example.com/automate', 'type': 'book', 'logo': 'https://via.placeholder.com/50x50/3b82f6/ffffff?text=Book'},
+                        {'title': 'Python for Data Science', 'url': 'https://example.com/python-ds', 'type': 'course', 'logo': '/static/images/resource-icons/course.png'},
+                        {'title': 'Automate the Boring Stuff', 'url': 'https://example.com/automate', 'type': 'book', 'logo': '/static/images/resource-icons/book.png'},
                     ],
                     'quiz': [
                         {
@@ -60,8 +60,8 @@ def create_sample_data():
                     'title': 'Statistics and Mathematics',
                     'description': 'Understand the mathematical foundations of machine learning',
                     'resources': [
-                        {'title': 'Khan Academy Statistics', 'url': 'https://example.com/khan-stats', 'type': 'course', 'logo': 'https://via.placeholder.com/50x50/10b981/ffffff?text=Khan'},
-                        {'title': 'Linear Algebra Refresher', 'url': 'https://example.com/linear-algebra', 'type': 'video', 'logo': 'https://via.placeholder.com/50x50/f59e0b/ffffff?text=LA'},
+                        {'title': 'Khan Academy Statistics', 'url': 'https://example.com/khan-stats', 'type': 'course', 'logo': '/static/images/resource-icons/course.png'},
+                        {'title': 'Linear Algebra Refresher', 'url': 'https://example.com/linear-algebra', 'type': 'video', 'logo': '/static/images/resource-icons/video.png'},
                     ],
                     'quiz': [
                         {
@@ -81,8 +81,8 @@ def create_sample_data():
                     'title': 'Machine Learning Basics',
                     'description': 'Learn core ML algorithms and concepts',
                     'resources': [
-                        {'title': 'Andrew Ng ML Course', 'url': 'https://example.com/andrew-ng', 'type': 'course', 'logo': 'https://via.placeholder.com/50x50/dc2626/ffffff?text=ML'},
-                        {'title': 'Scikit-learn Documentation', 'url': 'https://example.com/sklearn-docs', 'type': 'documentation', 'logo': 'https://via.placeholder.com/50x50/7c3aed/ffffff?text=SKL'},
+                        {'title': 'Andrew Ng ML Course', 'url': 'https://example.com/andrew-ng', 'type': 'course', 'logo': '/static/images/resource-icons/course.png'},
+                        {'title': 'Scikit-learn Documentation', 'url': 'https://example.com/sklearn-docs', 'type': 'documentation', 'logo': '/static/images/resource-icons/documentation.png'},
                     ],
                     'quiz': [
                         {
@@ -109,8 +109,8 @@ def create_sample_data():
                     'title': 'Data Analysis with Python',
                     'description': 'Master data manipulation and analysis tools',
                     'resources': [
-                        {'title': 'Pandas Mastery', 'url': 'https://example.com/pandas', 'type': 'course', 'logo': 'https://via.placeholder.com/50x50/2563eb/ffffff?text=PD'},
-                        {'title': 'Data Cleaning Handbook', 'url': 'https://example.com/data-cleaning', 'type': 'book', 'logo': 'https://via.placeholder.com/50x50/3b82f6/ffffff?text=DC'},
+                        {'title': 'Pandas Mastery', 'url': 'https://example.com/pandas', 'type': 'course', 'logo': '/static/images/resource-icons/course.png'},
+                        {'title': 'Data Cleaning Handbook', 'url': 'https://example.com/data-cleaning', 'type': 'book', 'logo': '/static/images/resource-icons/book.png'},
                     ],
                     'quiz': [
                         {
@@ -130,8 +130,8 @@ def create_sample_data():
                     'title': 'Data Visualization',
                     'description': 'Create compelling visualizations to communicate insights',
                     'resources': [
-                        {'title': 'Tableau Fundamentals', 'url': 'https://example.com/tableau', 'type': 'course', 'logo': 'https://via.placeholder.com/50x50/10b981/ffffff?text=Tab'},
-                        {'title': 'Matplotlib Guide', 'url': 'https://example.com/matplotlib', 'type': 'tutorial', 'logo': 'https://via.placeholder.com/50x50/f59e0b/ffffff?text=MPL'},
+                        {'title': 'Tableau Fundamentals', 'url': 'https://example.com/tableau', 'type': 'course', 'logo': '/static/images/resource-icons/course.png'},
+                        {'title': 'Matplotlib Guide', 'url': 'https://example.com/matplotlib', 'type': 'tutorial', 'logo': '/static/images/resource-icons/tutorial.png'},
                     ],
                     'quiz': [
                         {
@@ -151,8 +151,8 @@ def create_sample_data():
                     'title': 'Advanced Analytics',
                     'description': 'Apply statistical modeling and predictive analytics',
                     'resources': [
-                        {'title': 'Statistical Learning', 'url': 'https://example.com/stat-learning', 'type': 'book', 'logo': 'https://via.placeholder.com/50x50/dc2626/ffffff?text=SL'},
-                        {'title': 'Time Series Analysis', 'url': 'https://example.com/time-series', 'type': 'course', 'logo': 'https://via.placeholder.com/50x50/7c3aed/ffffff?text=TSA'},
+                        {'title': 'Statistical Learning', 'url': 'https://example.com/stat-learning', 'type': 'book', 'logo': '/static/images/resource-icons/book.png'},
+                        {'title': 'Time Series Analysis', 'url': 'https://example.com/time-series', 'type': 'course', 'logo': '/static/images/resource-icons/course.png'},
                     ],
                     'quiz': [
                         {
@@ -179,8 +179,8 @@ def create_sample_data():
                     'title': 'Product Management Basics',
                     'description': 'Learn core PM skills and methodologies',
                     'resources': [
-                        {'title': 'Inspired by Marty Cagan', 'url': 'https://example.com/inspired', 'type': 'book', 'logo': 'https://via.placeholder.com/50x50/2563eb/ffffff?text=PM'},
-                        {'title': 'Product School', 'url': 'https://example.com/product-school', 'type': 'course', 'logo': 'https://via.placeholder.com/50x50/3b82f6/ffffff?text=PS'},
+                        {'title': 'Inspired by Marty Cagan', 'url': 'https://example.com/inspired', 'type': 'book', 'logo': '/static/images/resource-icons/book.png'},
+                        {'title': 'Product School', 'url': 'https://example.com/product-school', 'type': 'course', 'logo': '/static/images/resource-icons/course.png'},
                     ],
                     'quiz': [
                         {
@@ -200,8 +200,8 @@ def create_sample_data():
                     'title': 'AI Product Strategy',
                     'description': 'Understand how to build and launch AI products',
                     'resources': [
-                        {'title': 'AI Product Management', 'url': 'https://example.com/ai-pm', 'type': 'course', 'logo': 'https://via.placeholder.com/50x50/10b981/ffffff?text=AIPM'},
-                        {'title': 'Machine Learning for PMs', 'url': 'https://example.com/ml-for-pms', 'type': 'article', 'logo': 'https://via.placeholder.com/50x50/f59e0b/ffffff?text=MLPM'},
+                        {'title': 'AI Product Management', 'url': 'https://example.com/ai-pm', 'type': 'course', 'logo': '/static/images/resource-icons/course.png'},
+                        {'title': 'Machine Learning for PMs', 'url': 'https://example.com/ml-for-pms', 'type': 'article', 'logo': '/static/images/resource-icons/article.png'},
                     ],
                     'quiz': [
                         {
@@ -221,8 +221,8 @@ def create_sample_data():
                     'title': 'AI Ethics and Governance',
                     'description': 'Navigate ethical considerations in AI product development',
                     'resources': [
-                        {'title': 'AI Ethics Guidelines', 'url': 'https://example.com/ai-ethics', 'type': 'guide', 'logo': 'https://via.placeholder.com/50x50/dc2626/ffffff?text=ETH'},
-                        {'title': 'Responsible AI Framework', 'url': 'https://example.com/responsible-ai', 'type': 'framework', 'logo': 'https://via.placeholder.com/50x50/7c3aed/ffffff?text=RAI'},
+                        {'title': 'AI Ethics Guidelines', 'url': 'https://example.com/ai-ethics', 'type': 'guide', 'logo': '/static/images/resource-icons/guide.png'},
+                        {'title': 'Responsible AI Framework', 'url': 'https://example.com/responsible-ai', 'type': 'framework', 'logo': '/static/images/resource-icons/framework.png'},
                     ],
                     'quiz': [
                         {
@@ -249,8 +249,8 @@ def create_sample_data():
                     'title': 'ML System Design',
                     'description': 'Learn to design scalable ML systems',
                     'resources': [
-                        {'title': 'Designing Machine Learning Systems', 'url': 'https://example.com/ml-systems', 'type': 'book', 'logo': 'https://via.placeholder.com/50x50/2563eb/ffffff?text=MLD'},
-                        {'title': 'MLOps Zoomcamp', 'url': 'https://example.com/mlops-zoomcamp', 'type': 'course', 'logo': 'https://via.placeholder.com/50x50/3b82f6/ffffff?text=MLO'},
+                        {'title': 'Designing Machine Learning Systems', 'url': 'https://example.com/ml-systems', 'type': 'book', 'logo': '/static/images/resource-icons/book.png'},
+                        {'title': 'MLOps Zoomcamp', 'url': 'https://example.com/mlops-zoomcamp', 'type': 'course', 'logo': '/static/images/resource-icons/course.png'},
                     ],
                     'quiz': [
                         {
@@ -277,8 +277,8 @@ def create_sample_data():
                     'title': 'Research Methodology',
                     'description': 'Learn scientific research methods and paper writing',
                     'resources': [
-                        {'title': 'Deep Learning Research', 'url': 'https://example.com/dl-research', 'type': 'course', 'logo': 'https://via.placeholder.com/50x50/10b981/ffffff?text=DLR'},
-                        {'title': 'Research Paper Writing', 'url': 'https://example.com/paper-writing', 'type': 'guide', 'logo': 'https://via.placeholder.com/50x50/f59e0b/ffffff?text=RPW'},
+                        {'title': 'Deep Learning Research', 'url': 'https://example.com/dl-research', 'type': 'course', 'logo': '/static/images/resource-icons/course.png'},
+                        {'title': 'Research Paper Writing', 'url': 'https://example.com/paper-writing', 'type': 'guide', 'logo': '/static/images/resource-icons/guide.png'},
                     ],
                     'quiz': [
                         {
@@ -305,8 +305,8 @@ def create_sample_data():
                     'title': 'Data Pipeline Fundamentals',
                     'description': 'Learn to build reliable data pipelines',
                     'resources': [
-                        {'title': 'Data Engineering Zoomcamp', 'url': 'https://example.com/de-zoomcamp', 'type': 'course', 'logo': 'https://via.placeholder.com/50x50/dc2626/ffffff?text=DEZ'},
-                        {'title': 'Apache Airflow Guide', 'url': 'https://example.com/airflow', 'type': 'documentation', 'logo': 'https://via.placeholder.com/50x50/7c3aed/ffffff?text=AFG'},
+                        {'title': 'Data Engineering Zoomcamp', 'url': 'https://example.com/de-zoomcamp', 'type': 'course', 'logo': '/static/images/resource-icons/course.png'},
+                        {'title': 'Apache Airflow Guide', 'url': 'https://example.com/airflow', 'type': 'documentation', 'logo': '/static/images/resource-icons/documentation.png'},
                     ],
                     'quiz': [
                         {
@@ -333,8 +333,8 @@ def create_sample_data():
                     'title': 'NLP Fundamentals',
                     'description': 'Master the basics of natural language processing',
                     'resources': [
-                        {'title': 'Natural Language Processing with Transformers', 'url': 'https://example.com/nlp-transformers', 'type': 'book', 'logo': 'https://via.placeholder.com/50x50/2563eb/ffffff?text=NLP'},
-                        {'title': 'Hugging Face Course', 'url': 'https://example.com/huggingface', 'type': 'course', 'logo': 'https://via.placeholder.com/50x50/3b82f6/ffffff?text=HF'},
+                        {'title': 'Natural Language Processing with Transformers', 'url': 'https://example.com/nlp-transformers', 'type': 'book', 'logo': '/static/images/resource-icons/book.png'},
+                        {'title': 'Hugging Face Course', 'url': 'https://example.com/huggingface', 'type': 'course', 'logo': '/static/images/resource-icons/course.png'},
                     ],
                     'quiz': [
                         {
@@ -361,8 +361,8 @@ def create_sample_data():
                     'title': 'Computer Vision Basics',
                     'description': 'Learn fundamental computer vision concepts',
                     'resources': [
-                        {'title': 'Computer Vision: Algorithms and Applications', 'url': 'https://example.com/cv-book', 'type': 'book', 'logo': 'https://via.placeholder.com/50x50/10b981/ffffff?text=CVA'},
-                        {'title': 'OpenCV Tutorials', 'url': 'https://example.com/opencv', 'type': 'tutorial', 'logo': 'https://via.placeholder.com/50x50/f59e0b/ffffff?text=OCV'},
+                        {'title': 'Computer Vision: Algorithms and Applications', 'url': 'https://example.com/cv-book', 'type': 'book', 'logo': '/static/images/resource-icons/book.png'},
+                        {'title': 'OpenCV Tutorials', 'url': 'https://example.com/opencv', 'type': 'tutorial', 'logo': '/static/images/resource-icons/tutorial.png'},
                     ],
                     'quiz': [
                         {
@@ -389,8 +389,8 @@ def create_sample_data():
                     'title': 'Ethics Foundations',
                     'description': 'Learn core ethical principles in AI development',
                     'resources': [
-                        {'title': 'Weapons of Math Destruction', 'url': 'https://example.com/weapons-math', 'type': 'book', 'logo': 'https://via.placeholder.com/50x50/2563eb/ffffff?text=WMD'},
-                        {'title': 'AI Ethics Guidelines', 'url': 'https://example.com/ai-ethics-course', 'type': 'course', 'logo': 'https://via.placeholder.com/50x50/3b82f6/ffffff?text=AIE'},
+                        {'title': 'Weapons of Math Destruction', 'url': 'https://example.com/weapons-math', 'type': 'book', 'logo': '/static/images/resource-icons/book.png'},
+                        {'title': 'AI Ethics Guidelines', 'url': 'https://example.com/ai-ethics-course', 'type': 'course', 'logo': '/static/images/resource-icons/course.png'},
                     ],
                     'quiz': [
                         {
@@ -417,8 +417,8 @@ def create_sample_data():
                     'title': 'Robotics Fundamentals',
                     'description': 'Master the basics of robotics and autonomous systems',
                     'resources': [
-                        {'title': 'Introduction to Robotics', 'url': 'https://example.com/intro-robotics', 'type': 'course', 'logo': 'https://via.placeholder.com/50x50/10b981/ffffff?text=IRB'},
-                        {'title': 'ROS Documentation', 'url': 'https://example.com/ros-docs', 'type': 'documentation', 'logo': 'https://via.placeholder.com/50x50/f59e0b/ffffff?text=ROS'},
+                        {'title': 'Introduction to Robotics', 'url': 'https://example.com/intro-robotics', 'type': 'course', 'logo': '/static/images/resource-icons/course.png'},
+                        {'title': 'ROS Documentation', 'url': 'https://example.com/ros-docs', 'type': 'documentation', 'logo': '/static/images/resource-icons/documentation.png'},
                     ],
                     'quiz': [
                         {
@@ -445,8 +445,8 @@ def create_sample_data():
                     'title': 'Cloud AI Platforms',
                     'description': 'Learn to work with major AI cloud platforms',
                     'resources': [
-                        {'title': 'AWS AI Services', 'url': 'https://example.com/aws-ai', 'type': 'course', 'logo': 'https://via.placeholder.com/50x50/dc2626/ffffff?text=AWS'},
-                        {'title': 'Google AI Platform', 'url': 'https://example.com/gcp-ai', 'type': 'documentation', 'logo': 'https://via.placeholder.com/50x50/7c3aed/ffffff?text=GCP'},
+                        {'title': 'AWS AI Services', 'url': 'https://example.com/aws-ai', 'type': 'course', 'logo': '/static/images/resource-icons/course.png'},
+                        {'title': 'Google AI Platform', 'url': 'https://example.com/gcp-ai', 'type': 'documentation', 'logo': '/static/images/resource-icons/documentation.png'},
                     ],
                     'quiz': [
                         {
@@ -473,8 +473,8 @@ def create_sample_data():
                     'title': 'Neural Networks Deep Dive',
                     'description': 'Master advanced neural network concepts and architectures',
                     'resources': [
-                        {'title': 'Deep Learning Specialization', 'url': 'https://example.com/deep-learning-spec', 'type': 'course', 'logo': 'https://via.placeholder.com/50x50/2563eb/ffffff?text=DLS'},
-                        {'title': 'Neural Networks and Deep Learning', 'url': 'https://example.com/nndl-book', 'type': 'book', 'logo': 'https://via.placeholder.com/50x50/3b82f6/ffffff?text=NNDL'},
+                        {'title': 'Deep Learning Specialization', 'url': 'https://example.com/deep-learning-spec', 'type': 'course', 'logo': '/static/images/resource-icons/course.png'},
+                        {'title': 'Neural Networks and Deep Learning', 'url': 'https://example.com/nndl-book', 'type': 'book', 'logo': '/static/images/resource-icons/book.png'},
                     ],
                     'quiz': [
                         {
@@ -501,8 +501,8 @@ def create_sample_data():
                     'title': 'Solution Architecture',
                     'description': 'Learn to design scalable AI solutions',
                     'resources': [
-                        {'title': 'Enterprise AI Architecture', 'url': 'https://example.com/enterprise-ai', 'type': 'course', 'logo': 'https://via.placeholder.com/50x50/10b981/ffffff?text=EAA'},
-                        {'title': 'AI System Design', 'url': 'https://example.com/ai-system-design', 'type': 'book', 'logo': 'https://via.placeholder.com/50x50/f59e0b/ffffff?text=ASD'},
+                        {'title': 'Enterprise AI Architecture', 'url': 'https://example.com/enterprise-ai', 'type': 'course', 'logo': '/static/images/resource-icons/course.png'},
+                        {'title': 'AI System Design', 'url': 'https://example.com/ai-system-design', 'type': 'book', 'logo': '/static/images/resource-icons/book.png'},
                     ],
                     'quiz': [
                         {
@@ -529,8 +529,8 @@ def create_sample_data():
                     'title': 'Conversational AI Basics',
                     'description': 'Learn the fundamentals of building conversational interfaces',
                     'resources': [
-                        {'title': 'Dialogflow Development', 'url': 'https://example.com/dialogflow', 'type': 'course', 'logo': 'https://via.placeholder.com/50x50/dc2626/ffffff?text=DF'},
-                        {'title': 'Rasa Framework', 'url': 'https://example.com/rasa-docs', 'type': 'documentation', 'logo': 'https://via.placeholder.com/50x50/7c3aed/ffffff?text=RASA'},
+                        {'title': 'Dialogflow Development', 'url': 'https://example.com/dialogflow', 'type': 'course', 'logo': '/static/images/resource-icons/course.png'},
+                        {'title': 'Rasa Framework', 'url': 'https://example.com/rasa-docs', 'type': 'documentation', 'logo': '/static/images/resource-icons/documentation.png'},
                     ],
                     'quiz': [
                         {
@@ -557,8 +557,8 @@ def create_sample_data():
                     'title': 'Data Annotation Techniques',
                     'description': 'Learn professional data annotation and labeling methods',
                     'resources': [
-                        {'title': 'Data Labeling Best Practices', 'url': 'https://example.com/data-labeling', 'type': 'guide', 'logo': 'https://via.placeholder.com/50x50/2563eb/ffffff?text=DLB'},
-                        {'title': 'Annotation Tools Overview', 'url': 'https://example.com/annotation-tools', 'type': 'tutorial', 'logo': 'https://via.placeholder.com/50x50/3b82f6/ffffff?text=ATO'},
+                        {'title': 'Data Labeling Best Practices', 'url': 'https://example.com/data-labeling', 'type': 'guide', 'logo': '/static/images/resource-icons/guide.png'},
+                        {'title': 'Annotation Tools Overview', 'url': 'https://example.com/annotation-tools', 'type': 'tutorial', 'logo': '/static/images/resource-icons/tutorial.png'},
                     ],
                     'quiz': [
                         {
