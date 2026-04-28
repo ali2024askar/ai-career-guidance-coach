@@ -9,20 +9,18 @@
             <h1>Analyzing your career interest</h1>
             <p class="pf-form-help">We're building your roadmap now. This may take a few moments.</p>
 
-            <div class="pf-progress-shell" style="margin:32px 0;" id="progress-shell">
+            <div class="pf-progress-shell" style="margin:32px 0;">
                 <div class="pf-progress-bar" id="progress-bar"></div>
             </div>
             <div style="display:flex; justify-content:space-between; gap:12px; font-size:0.95rem; color:#475569;" id="progress-info">
-                <span id="progress-label">Preparing analysis...</span>
+                <span id="progress-label">Starting...</span>
                 <span id="progress-percent">0%</span>
             </div>
 
             <p style="margin-top:18px; color:#334155;" id="status-text">Please keep this page open while we process your interest.</p>
 
-            <!-- Error container (hidden by default) -->
             <div id="error-box" style="display:none;"></div>
 
-            {% csrf_token %}
             <noscript>
                 <div class="pf-alert pf-alert--warning">JavaScript is required to complete the analysis flow.</div>
             </noscript>
@@ -46,19 +44,16 @@
     background: linear-gradient(90deg, #4f46e5 0%, #6366f1 50%, #818cf8 100%);
     background-size: 200% 100%;
     border-radius: 999px;
-    transition: width 0.3s ease;
+    transition: width 0.4s ease;
     animation: pf-bar-shimmer 1.5s linear infinite;
 }
 @keyframes pf-bar-shimmer {
     0%   { background-position: 200% 0; }
     100% { background-position: -200% 0; }
 }
-
-/* Error states */
 .pf-progress-bar--error {
     background: linear-gradient(90deg, #ef4444, #f87171, #ef4444) !important;
 }
-
 .pf-analyze-error {
     margin-top: 24px;
     padding: 20px 24px;
@@ -84,16 +79,12 @@
     gap: 10px;
     flex-wrap: wrap;
 }
-
-/* User error — red */
 .pf-analyze-error--user {
     background: #fef2f2;
     border: 1px solid #fecaca;
     color: #991b1b;
 }
 .pf-analyze-error--user .pf-analyze-error__title { color: #b91c1c; }
-
-/* System error — amber */
 .pf-analyze-error--system {
     background: #fffbeb;
     border: 1px solid #fde68a;
@@ -106,47 +97,20 @@
 {% block extra_js %}
 <script>
 (function () {
-    var WAIT_MS   = {{ analysis_seconds|default:15 }} * 1000;
-    var startTime = Date.now();
-    var bar       = document.getElementById('progress-bar');
-    var label     = document.getElementById('progress-label');
-    var pct       = document.getElementById('progress-percent');
-    var errorBox  = document.getElementById('error-box');
+    var bar        = document.getElementById('progress-bar');
+    var label      = document.getElementById('progress-label');
+    var pct        = document.getElementById('progress-percent');
+    var errorBox   = document.getElementById('error-box');
     var statusText = document.getElementById('status-text');
     var progressInfo = document.getElementById('progress-info');
-    var timer;
 
-    var steps = [
-        [0,  'Preparing analysis...'],
-        [12, 'Reading your interests...'],
-        [30, 'Connecting to AI service...'],
-        [50, 'Matching career paths...'],
-        [68, 'Building your roadmap...'],
-        [82, 'Selecting resources...'],
-        [93, 'Finalizing results...'],
-    ];
-
-    function updateProgress() {
-        var elapsed = Date.now() - startTime;
-        var ratio   = Math.min(elapsed / WAIT_MS, 1);
-        var percent = Math.round(ratio * 100);
-
+    function setProgress(percent, text) {
         bar.style.width = percent + '%';
         pct.textContent = percent + '%';
-
-        for (var i = steps.length - 1; i >= 0; i--) {
-            if (percent >= steps[i][0]) {
-                label.textContent = steps[i][1];
-                break;
-            }
-        }
+        if (text) label.textContent = text;
     }
 
-    timer = setInterval(updateProgress, 80);
-    updateProgress();
-
     function showError(type, message) {
-        clearInterval(timer);
         bar.classList.add('pf-progress-bar--error');
         bar.style.width = '100%';
         progressInfo.style.display = 'none';
@@ -157,9 +121,9 @@
             ? '<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" stroke="currentColor" stroke-width="1.5"/><path d="M10 6v4M10 13v.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>'
             : '<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 2L1 18h18L10 2z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M10 8v4M10 14.5v.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
 
-        var title = isUser ? 'Please check your input' : 'Something went wrong';
+        var title   = isUser ? 'Please check your input' : 'Something went wrong';
         var btnLabel = isUser ? 'Try different interest' : 'Try again';
-        var btnUrl = isUser ? '{% url "career:chat" %}' : '{% url "career:analyze" %}';
+        var btnUrl   = isUser ? '{% url "career:chat" %}' : '{% url "career:analyze" %}';
 
         errorBox.innerHTML =
             '<div class="pf-analyze-error pf-analyze-error--' + type + '">' +
@@ -173,50 +137,35 @@
         errorBox.style.display = 'block';
     }
 
-    /* ── Fire API call ── */
-    var csrfEl = document.querySelector('[name=csrfmiddlewaretoken]');
-    var token  = csrfEl ? csrfEl.value : '';
+    /* ── Connect to SSE stream ── */
+    var source = new EventSource('{% url "career:analyze_stream" %}');
 
-    var apiCall = fetch('{% url "career:analyze_api" %}', {
-        method: 'POST',
-        credentials: 'same-origin',
-        headers: {
-            'X-CSRFToken': token,
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: ''
-    }).then(function (r) { return r.json(); });
+    source.onmessage = function (event) {
+        var data = JSON.parse(event.data);
 
-    var minWait = new Promise(function (resolve) {
-        setTimeout(resolve, WAIT_MS);
-    });
-
-    Promise.all([apiCall, minWait]).then(function (results) {
-        var data = results[0];
-        clearInterval(timer);
-
-        /* ── Error from API ── */
+        /* Error */
         if (data.error_type) {
+            source.close();
             showError(data.error_type, data.error_message);
             return;
         }
 
-        /* ── Success ── */
-        bar.style.width = '100%';
-        pct.textContent = '100%';
-        label.textContent = 'Done! Redirecting...';
+        /* Progress update */
+        setProgress(data.progress, data.label);
 
-        setTimeout(function () {
-            if (data.redirect) {
+        /* Done → redirect */
+        if (data.redirect) {
+            source.close();
+            setTimeout(function () {
                 window.location.href = data.redirect;
-            } else {
-                showError('system', 'We received an unexpected response. Please try again.');
-            }
-        }, 600);
+            }, 600);
+        }
+    };
 
-    })['catch'](function () {
-        showError('system', 'Could not connect to our analysis service. Please check your connection and try again.');
-    });
+    source.onerror = function () {
+        source.close();
+        showError('system', 'Lost connection to the analysis service. Please try again.');
+    };
 })();
 </script>
 {% endblock %}

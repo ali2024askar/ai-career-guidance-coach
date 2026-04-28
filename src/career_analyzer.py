@@ -1,8 +1,9 @@
 import os
 import re
 import logging
-
+from openai import OpenAI
 from django.apps import apps
+from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
@@ -23,25 +24,10 @@ def _build_prompt(slugs, interest_text):
 
 
 def _call_openai(prompt):
-    """
-    Call the OpenAI Responses API.
-    Returns (response_text, error_or_None).
-    """
     try:
-        from openai import OpenAI
-    except ImportError:
-        logger.error("openai package is not installed")
-        return None, SYSTEM_ERROR
-
-    api_key = os.environ.get("OPENAI_API_KEY", "").strip()
-    if not api_key:
-        logger.error("OPENAI_API_KEY is not set")
-        return None, SYSTEM_ERROR
-
-    try:
-        client = OpenAI(api_key=api_key)
+        client = OpenAI(api_key= settings.OPENAI_API_KEY)
         response = client.responses.create(
-            model=os.environ.get("OPENAI_MODEL", "gpt-4.1-nano"),
+            model=settings.OPENAI_MODEL,
             input=prompt,
         )
         text = response.output_text.strip()

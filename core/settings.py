@@ -130,6 +130,8 @@ os.makedirs(DJANGO_LOG_DIR, exist_ok=True)
 
 DJANGO_LOG_FILE = os.path.join(DJANGO_LOG_DIR, "django.log")
 DJANGO_ERROR_LOG_FILE = os.path.join(DJANGO_LOG_DIR, "error.log")
+OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY", "").strip()
+OPENAI_MODEL = os.environ.get("OPENAI_MODEL", "gpt-5-nano").strip()
 
 logging.config.dictConfig({
     "version": 1,
