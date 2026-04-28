@@ -76,17 +76,21 @@ def analyze_stream_view(request):
         return f"data: {json.dumps(data)}\n\n"
 
     def event_stream():
+        import time
         from src.career_analyzer import (
             MIN_INPUT_LENGTH, MAX_INPUT_LENGTH,
             _build_prompt, _call_openai, _parse_index,
         )
         from django.apps import apps
         Career = apps.get_model('career', 'Career')
-       # simulate delay for better UX (ensures loading state is visible)
+
+        STEP_DELAY = 1.5  # extra seconds per step for smoother UX
+
         text = profile.interest_text.strip()
 
         # ── Step 1: Validate input ─────────────────────
         yield _sse({"progress": 10, "label": "Validating your input..."})
+        time.sleep(STEP_DELAY)
 
         if len(text) < MIN_INPUT_LENGTH:
             yield _sse({"progress": 100, "error_type": "user",
@@ -99,8 +103,9 @@ def analyze_stream_view(request):
 
         # ── Step 2: Load careers ───────────────────────
         yield _sse({"progress": 25, "label": "Loading career paths..."})
-
         slugs = list(Career.objects.values_list('slug', flat=True))
+        time.sleep(STEP_DELAY)
+
         if not slugs:
             yield _sse({"progress": 100, "error_type": "system",
                         "error_message": "No career paths are available yet. Please try again later."})
@@ -109,10 +114,12 @@ def analyze_stream_view(request):
         # ── Step 3: Build prompt ───────────────────────
         yield _sse({"progress": 40, "label": "Preparing AI analysis..."})
         prompt = _build_prompt(slugs, text)
+        time.sleep(STEP_DELAY)
 
         # ── Step 4: Call OpenAI (the slow part) ────────
         yield _sse({"progress": 50, "label": "Consulting our AI advisor..."})
         response_text, api_error = _call_openai(prompt)
+        # no extra sleep — OpenAI already takes real time
 
         if api_error:
             yield _sse({"progress": 100, "error_type": api_error["type"],
@@ -122,6 +129,7 @@ def analyze_stream_view(request):
         # ── Step 5: Parse response ─────────────────────
         yield _sse({"progress": 75, "label": "Interpreting results..."})
         matched_slug = _parse_index(response_text, slugs)
+        time.sleep(STEP_DELAY)
 
         if matched_slug is None:
             yield _sse({"progress": 100, "error_type": "user",
@@ -132,6 +140,7 @@ def analyze_stream_view(request):
         # ── Step 6: Look up career ─────────────────────
         yield _sse({"progress": 85, "label": "Matching career path..."})
         career = Career.objects.filter(slug__iexact=matched_slug).first()
+        time.sleep(STEP_DELAY)
 
         if not career:
             yield _sse({"progress": 100, "error_type": "system",
@@ -146,6 +155,7 @@ def analyze_stream_view(request):
             f'we\'ve matched you with the {career.title} career path.'
         )
         profile.save()
+        time.sleep(STEP_DELAY)
 
         # ── Done ───────────────────────────────────────
         yield _sse({"progress": 100, "label": "Done! Redirecting...",
