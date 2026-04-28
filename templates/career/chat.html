@@ -7,17 +7,28 @@
     <div class="pf-wrap pf-wrap--lg">
         <div class="pf-card pf-anim-fade-up">
             <h2 class="pf-chat__title">Tell us about your interest</h2>
-            <p class="pf-form-help pf-form-help--lg">Use this chat to share your interests and get matched to the right roadmap.</p>
-            <br>
-          
+            <p class="pf-form-help pf-form-help--lg">Tap a topic below or type your own. We'll match you to the right career path.</p>
 
-            <form class="pf-form" method="post" novalidate>
+            <!-- Keyword chips from DB -->
+            {% if keywords %}
+            <div class="pf-chips" id="chips">
+                {% for kw in keywords %}
+                <button type="button" class="pf-chip" data-keyword="{{ kw.keyword }}">{{ kw.label }}</button>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <form class="pf-form" method="post" novalidate id="chat-form">
                 {% csrf_token %}
                 <div class="pf-field">
-                    <textarea id="message" name="message" class="pf-textarea" placeholder="ex: I like art and technology" required></textarea>
+                    <textarea id="message" name="message" class="pf-textarea" maxlength="200" minlength="5"
+                              placeholder="ex: I like art and technology" required></textarea>
+                    <div class="pf-char-count">
+                        <span id="char-count">0</span> / 200
+                    </div>
                 </div>
                 <div class="pf-form__actions">
-                    <button type="submit" class="pf-btn pf-btn--primary">Send</button>
+                    <button type="submit" class="pf-btn pf-btn--primary" id="send-btn">Send</button>
                     {% if profile.interest_text %}
                         <a href="{% url 'career:roadmap' %}" class="pf-btn pf-btn--ghost">Skip to roadmap</a>
                     {% else %}
@@ -28,4 +39,118 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.pf-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+.pf-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--pf-border);
+    background: var(--pf-surface);
+    color: var(--pf-text-2);
+    font-family: var(--pf-font);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all .2s;
+    white-space: nowrap;
+}
+.pf-chip:hover {
+    border-color: var(--pf-accent-border);
+    color: var(--pf-accent);
+    background: var(--pf-accent-light);
+}
+.pf-chip--active {
+    border-color: var(--pf-accent);
+    color: #fff;
+    background: var(--pf-accent);
+}
+.pf-chip--active:hover {
+    background: var(--pf-accent-dark);
+    color: #fff;
+}
+
+.pf-char-count {
+    text-align: right;
+    font-size: 12px;
+    font-family: var(--pf-mono);
+    color: var(--pf-text-3);
+    margin-top: 6px;
+}
+.pf-char-count--warn { color: #f59e0b; }
+.pf-char-count--over { color: #ef4444; font-weight: 600; }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function () {
+    var textarea  = document.getElementById('message');
+    var counter   = document.getElementById('char-count');
+    var counterWrap = counter.parentElement;
+    var chips     = document.querySelectorAll('.pf-chip');
+    var form      = document.getElementById('chat-form');
+    var MAX       = 200;
+
+    /* ── Character counter ── */
+    function updateCounter() {
+        var len = textarea.value.length;
+        counter.textContent = len;
+        counterWrap.className = 'pf-char-count';
+        if (len > MAX) {
+            counterWrap.classList.add('pf-char-count--over');
+        } else if (len > MAX * 0.85) {
+            counterWrap.classList.add('pf-char-count--warn');
+        }
+    }
+    textarea.addEventListener('input', updateCounter);
+    updateCounter();
+
+    /* ── Chip click → toggle keyword in textarea ── */
+    chips.forEach(function (chip) {
+        chip.addEventListener('click', function () {
+            var keyword = chip.getAttribute('data-keyword');
+            var current = textarea.value.trim();
+            var isActive = chip.classList.contains('pf-chip--active');
+
+            if (isActive) {
+                /* Remove keyword */
+                chip.classList.remove('pf-chip--active');
+                var pattern = new RegExp(',?\\s*' + keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ',?\\s*', 'gi');
+                current = current.replace(pattern, ', ').replace(/^[,\s]+|[,\s]+$/g, '').replace(/,\s*,/g, ',');
+                /* Clean up "I like " if nothing left */
+                if (current === 'I like' || current === 'I like,') current = '';
+                textarea.value = current;
+            } else {
+                /* Add keyword */
+                chip.classList.add('pf-chip--active');
+                if (!current) {
+                    textarea.value = 'I like ' + keyword;
+                } else if (current.length + keyword.length + 2 <= MAX) {
+                    textarea.value = current + ', ' + keyword;
+                }
+            }
+            updateCounter();
+            textarea.focus();
+        });
+    });
+
+    /* ── Block submit if over limit ── */
+    form.addEventListener('submit', function (e) {
+        if (textarea.value.length > MAX) {
+            e.preventDefault();
+            textarea.focus();
+        }
+    });
+})();
+</script>
 {% endblock %}

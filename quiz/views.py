@@ -1,23 +1,8 @@
-from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from .models import Question, Option, UserStepProgress
 from accounts.models import UserProfile
-from career.models import RoadmapStep, Career
-
-
-def _get_demo_roadmap():
-    # Return the first available career, or create a default if none exist
-    career = Career.objects.first()
-    if not career:
-        career, _ = Career.objects.get_or_create(
-            slug='default-career',
-            defaults={
-                'title': 'Default Career Path',
-                'description': 'A default career path when no others are available.',
-            }
-        )
-    return career
+from career.models import RoadmapStep
 
 
 def step_quiz_view(request, step_id):
@@ -31,12 +16,15 @@ def step_quiz_view(request, step_id):
         request.session.flush()
         return redirect(reverse('accounts:signin'))
 
+    if not profile.career:
+        return redirect(reverse('career:chat'))
+
     try:
         step = RoadmapStep.objects.select_related('career').prefetch_related('questions__options').get(pk=step_id)
     except RoadmapStep.DoesNotExist:
         return redirect(reverse('career:roadmap'))
 
-    career = profile.career or _get_demo_roadmap()
+    career = profile.career
     if step.career_id != career.pk:
         return redirect(reverse('career:roadmap'))
 

@@ -52,6 +52,20 @@ class Resource(models.Model):
         return f"{self.title} ({self.career.title})"
 
 
+class InterestKeyword(models.Model):
+    """Clickable keyword chips shown on the chat page."""
+    label   = models.CharField(max_length=50, help_text="Short label shown on the chip, e.g. 'Medicine'")
+    keyword = models.CharField(max_length=100, help_text="Text inserted into the textarea, e.g. 'medicine & health'")
+    order   = models.PositiveSmallIntegerField(default=0)
+    active  = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ['order', 'label']
+
+    def __str__(self):
+        return self.label
+
+
 class RoadmapStep(models.Model):
     career      = models.ForeignKey(Career, on_delete=models.CASCADE, related_name='steps')
     order       = models.PositiveSmallIntegerField()

@@ -1,58 +1,128 @@
-import random
+import os
+import re
 import logging
 
 from django.apps import apps
 
 logger = logging.getLogger(__name__)
 
+MIN_INPUT_LENGTH = 5
+MAX_INPUT_LENGTH = 200
+
+SYSTEM_ERROR = {"type": "system", "message": "Something went wrong. Please try again later."}
+
+
+def _build_prompt(slugs, interest_text):
+    """Numbered list of careers. GPT returns 1 number. 0 = invalid."""
+    indexed = ",".join(f"{i}.{s}" for i, s in enumerate(slugs, 1))
+    return (
+        f"Interest: {interest_text}\n"
+        f"Options: {indexed}\n"
+        f"Return ONLY the number. If unsafe or unclear return 0."
+    )
+
+
+def _call_openai(prompt):
+    """
+    Call the OpenAI Responses API.
+    Returns (response_text, error_or_None).
+    """
+    try:
+        from openai import OpenAI
+    except ImportError:
+        logger.error("openai package is not installed")
+        return None, SYSTEM_ERROR
+
+    api_key = os.environ.get("OPENAI_API_KEY", "").strip()
+    if not api_key:
+        logger.error("OPENAI_API_KEY is not set")
+        return None, SYSTEM_ERROR
+
+    try:
+        client = OpenAI(api_key=api_key)
+        response = client.responses.create(
+            model=os.environ.get("OPENAI_MODEL", "gpt-4.1-nano"),
+            input=prompt,
+        )
+        text = response.output_text.strip()
+        logger.info("OpenAI raw response: %r", text)
+        return text, None
+
+    except Exception as exc:
+        name = type(exc).__name__
+        msg = str(exc).lower()
+        logger.exception("OpenAI error [%s]: %s", name, exc)
+
+        if "auth" in name.lower() or "auth" in msg:
+            return None, {"type": "system", "message": "AI service authentication failed. Please try again later."}
+        if "ratelimit" in name.lower() or "quota" in msg or "rate" in msg:
+            return None, {"type": "system", "message": "Our AI service is temporarily at capacity. Please try again in a few minutes."}
+        if "connection" in name.lower():
+            return None, {"type": "system", "message": "Could not reach the AI service. Please check your connection and try again."}
+
+        return None, SYSTEM_ERROR
+
+
+def _parse_index(response_text, slugs):
+    """
+    Extract the integer index from the OpenAI response.
+    Returns the career slug, or None if invalid / 0.
+    """
+    match = re.search(r'\d+', response_text)
+    if not match:
+        return None
+
+    idx = int(match.group())
+
+    if idx == 0:
+        return None
+
+    if 1 <= idx <= len(slugs):
+        return slugs[idx - 1]
+
+    return None
+
 
 def analyze_interest(interest_text):
     """
-    Analyze user interest text and return a random career slug.
-    Later this will call an external API.
+    Returns (career_slug, error_or_None).
+    error: {"type": "user"|"system", "message": "..."}
     """
+    # ── Input validation ───────────────────────────────
     if not interest_text or not interest_text.strip():
-        return None
+        return None, {"type": "user", "message": "Please describe your interests so we can find the right career for you."}
 
+    text = interest_text.strip()
+
+    if len(text) < MIN_INPUT_LENGTH:
+        return None, {"type": "user", "message": "That's a bit short! Tell us more about what excites you."}
+
+    if len(text) > MAX_INPUT_LENGTH:
+        return None, {"type": "user", "message": f"Please keep your description under {MAX_INPUT_LENGTH} characters."}
+
+    # ── Load careers ───────────────────────────────────
     Career = apps.get_model('career', 'Career')
     slugs = list(Career.objects.values_list('slug', flat=True))
 
     if not slugs:
-        return None
+        return None, {"type": "system", "message": "No career paths are available yet. Please try again later."}
 
-    if 'Psychology' in slugs:
-        selected = 'Psychology'
-    else:
-        selected = random.choice(slugs)
+    # ── Call OpenAI ────────────────────────────────────
+    prompt = _build_prompt(slugs, text)
+    print("Prompt sent to OpenAI:", prompt)  # Debug log
+    response_text, api_error = _call_openai(prompt)
 
-    logger.info(
-        "Career analysis request — interest: %r | available careers: %s | selected: %s",
-        interest_text,
-        slugs,
-        selected,
-    )
-    return selected
+    if api_error:
+        return None, api_error
 
+    # ── Parse index from response ─────────────────────
+    selected = _parse_index(response_text, slugs)
 
-def generate_analysis_text(interest_text, career_name):
-    """
-    Generate a personalised analysis blurb.
-    Later this will be the external-API response.
-    """
-    templates = [
-        "Based on your interest in \"{interest}\", we've matched you with the "
-        "{career} career path. This seems like an excellent fit for your goals!",
+    if selected is None:
+        return None, {
+            "type": "user",
+            "message": "We couldn't match your interest to a career. Please describe a real hobby, skill, or topic you're curious about.",
+        }
 
-        "Your passion for \"{interest}\" aligns perfectly with the {career} "
-        "track. This career path will help you develop the skills you need.",
-
-        "Given your interest in \"{interest}\", the {career} career path "
-        "appears to be an ideal match for your aspirations.",
-
-        "We've selected the {career} career path based on your interest in "
-        "\"{interest}\". This will be a great journey for you!",
-    ]
-    return random.choice(templates).format(
-        interest=interest_text,
-        career=career_name,
-    )
+    logger.info("Career matched — interest: %r → %s", text, selected)
+    return selected, None

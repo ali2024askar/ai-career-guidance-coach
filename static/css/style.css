@@ -552,6 +552,14 @@ a:hover { text-decoration: underline; }
     letter-spacing: -.01em;
 }
 
+.pf-career-banner__desc {
+    margin: 4px 0 0;
+    font-size: .9rem;
+    line-height: 1.6;
+    color: var(--pf-text-2);
+    max-width: 500px;
+}
+
 .pf-career-banner__action {
     position: relative;
     z-index: 1;

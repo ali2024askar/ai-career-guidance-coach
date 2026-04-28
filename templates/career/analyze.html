@@ -5,22 +5,26 @@
 {% block content %}
 <div class="pf-page pf-page--centered">
     <div class="pf-wrap pf-wrap--sm">
-        <div class="pf-card pf-anim-fade-up" style="text-align:center;">
+        <div class="pf-card pf-anim-fade-up" style="text-align:center;" id="analyze-card">
             <h1>Analyzing your career interest</h1>
             <p class="pf-form-help">We're building your roadmap now. This may take a few moments.</p>
 
-            <div class="pf-progress-shell" style="margin:32px 0;">
+            <div class="pf-progress-shell" style="margin:32px 0;" id="progress-shell">
                 <div class="pf-progress-bar" id="progress-bar"></div>
             </div>
-            <div style="display:flex; justify-content:space-between; gap:12px; font-size:0.95rem; color:#475569;">
+            <div style="display:flex; justify-content:space-between; gap:12px; font-size:0.95rem; color:#475569;" id="progress-info">
                 <span id="progress-label">Preparing analysis...</span>
                 <span id="progress-percent">0%</span>
             </div>
 
-            <p style="margin-top:18px; color:#334155;">Please keep this page open while we process your interest.</p>
+            <p style="margin-top:18px; color:#334155;" id="status-text">Please keep this page open while we process your interest.</p>
+
+            <!-- Error container (hidden by default) -->
+            <div id="error-box" style="display:none;"></div>
+
             {% csrf_token %}
             <noscript>
-                <div class="pf-alert pf-alert--warning">JavaScript is required to complete the analysis flow. Please enable JavaScript or refresh.</div>
+                <div class="pf-alert pf-alert--warning">JavaScript is required to complete the analysis flow.</div>
             </noscript>
         </div>
     </div>
@@ -49,26 +53,77 @@
     0%   { background-position: 200% 0; }
     100% { background-position: -200% 0; }
 }
+
+/* Error states */
+.pf-progress-bar--error {
+    background: linear-gradient(90deg, #ef4444, #f87171, #ef4444) !important;
+}
+
+.pf-analyze-error {
+    margin-top: 24px;
+    padding: 20px 24px;
+    border-radius: 14px;
+    text-align: left;
+    animation: pf-kf-fade-up .5s cubic-bezier(.22,1,.36,1) both;
+}
+.pf-analyze-error__title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    font-size: 15px;
+    margin-bottom: 6px;
+}
+.pf-analyze-error__message {
+    font-size: 14px;
+    line-height: 1.6;
+    margin: 0 0 16px;
+}
+.pf-analyze-error__actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* User error — red */
+.pf-analyze-error--user {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #991b1b;
+}
+.pf-analyze-error--user .pf-analyze-error__title { color: #b91c1c; }
+
+/* System error — amber */
+.pf-analyze-error--system {
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    color: #92400e;
+}
+.pf-analyze-error--system .pf-analyze-error__title { color: #b45309; }
 </style>
 {% endblock %}
 
 {% block extra_js %}
 <script>
 (function () {
-    var WAIT_MS   = {{ analysis_seconds|default:10 }} * 1000;
+    var WAIT_MS   = {{ analysis_seconds|default:15 }} * 1000;
     var startTime = Date.now();
     var bar       = document.getElementById('progress-bar');
     var label     = document.getElementById('progress-label');
     var pct       = document.getElementById('progress-percent');
-    var timer, apiData;
+    var errorBox  = document.getElementById('error-box');
+    var statusText = document.getElementById('status-text');
+    var progressInfo = document.getElementById('progress-info');
+    var timer;
 
     var steps = [
         [0,  'Preparing analysis...'],
-        [15, 'Reading your interests...'],
-        [35, 'Matching career paths...'],
-        [55, 'Building your roadmap...'],
-        [75, 'Selecting resources...'],
-        [90, 'Finalizing results...'],
+        [12, 'Reading your interests...'],
+        [30, 'Connecting to AI service...'],
+        [50, 'Matching career paths...'],
+        [68, 'Building your roadmap...'],
+        [82, 'Selecting resources...'],
+        [93, 'Finalizing results...'],
     ];
 
     function updateProgress() {
@@ -90,7 +145,35 @@
     timer = setInterval(updateProgress, 80);
     updateProgress();
 
-    /* ── Fire API call immediately ── */
+    function showError(type, message) {
+        clearInterval(timer);
+        bar.classList.add('pf-progress-bar--error');
+        bar.style.width = '100%';
+        progressInfo.style.display = 'none';
+        statusText.style.display = 'none';
+
+        var isUser = (type === 'user');
+        var icon = isUser
+            ? '<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" stroke="currentColor" stroke-width="1.5"/><path d="M10 6v4M10 13v.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>'
+            : '<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 2L1 18h18L10 2z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M10 8v4M10 14.5v.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
+
+        var title = isUser ? 'Please check your input' : 'Something went wrong';
+        var btnLabel = isUser ? 'Try different interest' : 'Try again';
+        var btnUrl = isUser ? '{% url "career:chat" %}' : '{% url "career:analyze" %}';
+
+        errorBox.innerHTML =
+            '<div class="pf-analyze-error pf-analyze-error--' + type + '">' +
+                '<div class="pf-analyze-error__title">' + icon + ' ' + title + '</div>' +
+                '<p class="pf-analyze-error__message">' + message + '</p>' +
+                '<div class="pf-analyze-error__actions">' +
+                    '<a href="' + btnUrl + '" class="pf-btn pf-btn--primary pf-btn--sm">' + btnLabel + '</a>' +
+                    '<a href="{% url "career:chat" %}" class="pf-btn pf-btn--ghost pf-btn--sm">Back to chat</a>' +
+                '</div>' +
+            '</div>';
+        errorBox.style.display = 'block';
+    }
+
+    /* ── Fire API call ── */
     var csrfEl = document.querySelector('[name=csrfmiddlewaretoken]');
     var token  = csrfEl ? csrfEl.value : '';
 
@@ -104,29 +187,35 @@
         body: ''
     }).then(function (r) { return r.json(); });
 
-    /* ── Minimum-wait timer ── */
     var minWait = new Promise(function (resolve) {
         setTimeout(resolve, WAIT_MS);
     });
 
-    /* ── Wait for BOTH api + timer, then redirect ── */
     Promise.all([apiCall, minWait]).then(function (results) {
         var data = results[0];
         clearInterval(timer);
+
+        /* ── Error from API ── */
+        if (data.error_type) {
+            showError(data.error_type, data.error_message);
+            return;
+        }
+
+        /* ── Success ── */
         bar.style.width = '100%';
         pct.textContent = '100%';
         label.textContent = 'Done! Redirecting...';
 
         setTimeout(function () {
-            if (data && data.redirect) {
+            if (data.redirect) {
                 window.location.href = data.redirect;
             } else {
-                label.textContent = 'Analysis failed. Please try again.';
+                showError('system', 'We received an unexpected response. Please try again.');
             }
         }, 600);
+
     })['catch'](function () {
-        clearInterval(timer);
-        label.textContent = 'Analysis failed. Please refresh the page.';
+        showError('system', 'Could not connect to our analysis service. Please check your connection and try again.');
     });
 })();
 </script>

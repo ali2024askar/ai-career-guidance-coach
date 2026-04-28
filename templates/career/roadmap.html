@@ -13,16 +13,14 @@
                     <div class="pf-career-banner__inner">
                         <span class="pf-career-banner__pill">Career path</span>
                         <h2 class="pf-career-banner__title">{{ career.title }}</h2>
+                        {% if career.description %}
+                            <p class="pf-career-banner__desc">{{ career.description }}</p>
+                        {% endif %}
                     </div>
                     <a href="{% url 'career:reset_interest' %}" class="pf-btn pf-btn--outline pf-btn--sm pf-career-banner__action" onclick="return confirm('Are you sure you want to clear your interests and start over? This will reset your progress.')">
                         Clear my interest
                     </a>
                 </div>
-                {% if demo_mode %}
-                    <div class="pf-alert pf-alert--info" style="margin-top:12px;">
-                        This roadmap is a database-backed demo preview so you can see how the template renders.
-                    </div>
-                {% endif %}
                 {% if profile.analysis_result %}
                     <div class="pf-alert pf-alert--info" style="margin-top:12px;">
                         {{ profile.analysis_result }}

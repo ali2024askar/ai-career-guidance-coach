@@ -3,7 +3,7 @@ from django.templatetags.static import static
 from django.utils.html import format_html
 from django.urls import reverse
 from django.db.models import Count
-from .models import Career, Resource, RoadmapStep
+from .models import Career, Resource, RoadmapStep, InterestKeyword
 
 
 # ──────────────────────────────────────────────────────────
@@ -206,3 +206,14 @@ class RoadmapStepAdmin(admin.ModelAdmin):
             '<a href="{}" style="color:{}">{} question{}</a>',
             url, color, count, 's' if count != 1 else ''
         )
+
+
+# ──────────────────────────────────────────────────────────
+#  InterestKeyword admin
+# ──────────────────────────────────────────────────────────
+@admin.register(InterestKeyword)
+class InterestKeywordAdmin(admin.ModelAdmin):
+    list_display  = ('label', 'keyword', 'order', 'active')
+    list_editable = ('order', 'active')
+    ordering      = ('order', 'label')
+    search_fields = ('label', 'keyword')

@@ -8,24 +8,37 @@
         <section class="pf-hero pf-anim-fade-up">
             <span class="pf-tag">Resources</span>
             <h1>Helpful learning resources</h1>
-            <p class="pf-hero__subtitle">These sample resources are connected to the career paths in our system.</p>
+            <p class="pf-hero__subtitle">
+                These sample resources are connected to the career paths in our system.
+            </p>
         </section>
 
         <section class="pf-section">
             <div class="pf-resource-list-grid">
-                {% for resource in resources %}
-                <a href="{{ resource.url }}" target="_blank" class="pf-resource-card pf-resource-card--list pf-anim-scale-up" style="--i:{{ forloop.counter0 }}">
+                
+                {% for career, resource in grouped_resources.items %}
+                <a href="{{ resource.url }}" target="_blank"
+                   class="pf-resource-card pf-resource-card--list pf-anim-scale-up"
+                   style="--i:{{ forloop.counter0 }}">
+
                     <div style="display:flex; align-items:flex-start; gap:14px;">
-                        <img src="{{ resource.effective_logo_url }}" alt="" class="pf-resource-card__icon">
+                        <img src="{{ resource.effective_logo_url }}" alt=""
+                             class="pf-resource-card__icon">
+
                         <div>
-                            <div class="pf-resource-card__label">{{ resource.get_type_display }}</div>
+                            <div class="pf-resource-card__label">
+                                {{ resource.get_type_display }}
+                            </div>
+
                             <strong>{{ resource.title }}</strong>
-                            <p>{{ resource.career.title }}</p>
+                            <p>{{ career.title }}</p>
                         </div>
                     </div>
+
                     <span class="pf-badge">Open</span>
                 </a>
                 {% endfor %}
+
             </div>
         </section>
     </div>
